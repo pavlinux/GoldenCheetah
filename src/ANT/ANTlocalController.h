@@ -36,7 +36,7 @@ class ANTlocalController : public RealtimeController
     Q_OBJECT
 
 public:
-    ANTlocalController (TrainSidebar *parent =0, DeviceConfiguration *dc =0);
+    ANTlocalController (TrainSidebar *parent = nullptr, DeviceConfiguration *dc = nullptr);
 
     ANT *myANTlocal;               // the device itself
 

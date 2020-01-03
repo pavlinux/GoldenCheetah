@@ -239,10 +239,12 @@ QList<QwtPickerMachine::Command> QwtPickerClickRectMachine::transition(
                     {
                         cmdList += End;
                         setState( 0 );
+                        break;
                     }
                 }
             }
         }
+        break;
         case QEvent::MouseMove:
         case QEvent::Wheel:
         {

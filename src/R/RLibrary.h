@@ -75,6 +75,8 @@ extern int GC_R_registerRoutines(DllInfo *info, const R_CMethodDef * const crout
                           const R_FortranMethodDef * const fortranRoutines,
                           const R_ExternalMethodDef * const externalRoutines);
 #ifndef WIN32
+
+#pragma GCC diagnostic ignored "-Wparentheses"
 extern void (*(*ptr_GC_ptr_R_Suicide))(const char *);
 extern void (*(*ptr_GC_ptr_R_ShowMessage))(const char *);
 extern int  (*(*ptr_GC_ptr_R_ReadConsole))(const char *, unsigned char *, int, int);

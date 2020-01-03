@@ -13,6 +13,7 @@
 # You must configure your settings by copying from gcconfig.pri.in.
 # The file contains instructions on settings to make
 include(gcconfig.pri)
+include(PVS-Studio.pri)
 
 # You can also define your own local source to add to build
 HEADERS += $${LOCALHEADERS}

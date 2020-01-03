@@ -215,12 +215,12 @@ double ANT::channelValue(int channel)
 }
 
 void ANT::setWheelRpm(float x) {
-    telemetry.setWheelRpm(x);
+    telemetry.setWheelRpm(static_cast<double>(x));
 
     // devConf will be NULL if we are are running the add device wizard
     // we can default to the global setting
-    if (devConf) telemetry.setSpeed(x * devConf->wheelSize / 1000 * 60 / 1000);
-    else telemetry.setSpeed(x * appsettings->cvalue(trainAthlete, GC_WHEELSIZE, 2100).toInt() / 1000 * 60 / 1000);
+    if (devConf) telemetry.setSpeed(static_cast<double>(x) * devConf->wheelSize / 1000 * 60 / 1000);
+    else telemetry.setSpeed(static_cast<double>(x) * appsettings->cvalue(trainAthlete, GC_WHEELSIZE, 2100).toInt() / 1000 * 60 / 1000);
 }
 
 void ANT::setHb(double smo2, double thb)
@@ -274,7 +274,7 @@ void ANT::run()
         int rc = rawRead(&byte, 1);
 
         if (rc > 0)
-            receiveByte((unsigned char)byte);
+            receiveByte(static_cast<unsigned char>(byte));
         else {
 
             // Recognise USB device removal. Linux transitions through -5 (I/O error)
@@ -315,7 +315,7 @@ void ANT::run()
 void
 ANT::setLoad(double load)
 {
-    if (this->load == load) return;
+    if (std::equal_to<double>()(this->load, load)) return;
 
     // load has changed
     this->load = load;
@@ -324,14 +324,16 @@ ANT::setLoad(double load)
     if (vortexChannel != -1)
     {
         qDebug() << "Setting vortex target power to" << load;
-        sendMessage(ANTMessage::tacxVortexSetPower(vortexChannel, vortexID, (int)load));
+        sendMessage(ANTMessage::tacxVortexSetPower(static_cast<uint8_t>(vortexChannel),
+                                                   static_cast<uint16_t>(vortexID),
+                                                   static_cast<uint16_t>(load)));
     }
 
     // if we have a FE-C trainer connected, relay the change in target power to the brake
     if ((fecChannel != -1) && (antChannel[fecChannel]->capabilities() & FITNESS_EQUIPMENT_POWER_MODE_CAPABILITY))
     {
         qDebug() << "Setting fitness equipment target power to" << load;
-        sendMessage(ANTMessage::fecSetTargetPower(fecChannel, (int)load));
+        sendMessage(ANTMessage::fecSetTargetPower(static_cast<uint8_t>(fecChannel), static_cast<uint16_t>(load)));
     }
 }
 
@@ -341,7 +343,7 @@ void ANT::refreshFecLoad()
         return;
 
     if (antChannel[fecChannel]->capabilities() & FITNESS_EQUIPMENT_POWER_MODE_CAPABILITY)
-        sendMessage(ANTMessage::fecSetTargetPower(fecChannel, (int)load));
+        sendMessage(ANTMessage::fecSetTargetPower(static_cast<uint8_t>(fecChannel), static_cast<uint16_t>(load)));
 }
 
 void ANT::refreshFecGradient()
@@ -350,7 +352,7 @@ void ANT::refreshFecGradient()
         return;
 
     if (antChannel[fecChannel]->capabilities() & FITNESS_EQUIPMENT_SIMUL_MODE_CAPABILITY)
-        sendMessage(ANTMessage::fecSetTrackResistance(fecChannel, gradient, currentRollingResistance));
+        sendMessage(ANTMessage::fecSetTrackResistance(static_cast<uint8_t>(fecChannel), gradient, currentRollingResistance));
 }
 
 void ANT::requestFecCapabilities()
@@ -358,12 +360,12 @@ void ANT::requestFecCapabilities()
     if (fecChannel == -1)
         return;
 
-    sendMessage(ANTMessage::fecRequestCapabilities(fecChannel));
+    sendMessage(ANTMessage::fecRequestCapabilities(static_cast<uint8_t>(fecChannel)));
 }
 
 void ANT::requestFecCalibration(uint8_t type)
 {
-    sendMessage(ANTMessage::fecRequestCalibration(fecChannel, type));
+    sendMessage(ANTMessage::fecRequestCalibration(static_cast<uint8_t>(fecChannel), type));
 }
 
 void ANT::requestPwrCalibration(uint8_t channel, uint8_t type)
@@ -376,7 +378,9 @@ void ANT::refreshVortexLoad()
     if (vortexChannel == -1)
         return;
 
-    sendMessage(ANTMessage::tacxVortexSetPower(vortexChannel, vortexID, (int)load));
+    sendMessage(ANTMessage::tacxVortexSetPower(static_cast<uint8_t>(vortexChannel),
+                                               static_cast<uint16_t>(vortexID),
+                                               static_cast<uint16_t>(load)));
 }
 
 void
@@ -743,7 +747,7 @@ ANT::findDevice(int device_number, int channel_type)
     }
 
     // device not found.
-    return NULL;
+    return nullptr;
 }
 
 int
@@ -923,7 +927,7 @@ ANT::slotControlTimerEvent()
     // Table 14-1. Required Data Elements for all ANT+ Controllable (i.e. Master) Devices
 
     //qDebug()<<"Timer event...";
-    sendMessage(ANTMessage::controlDeviceAvailability(controlChannel));
+    sendMessage(ANTMessage::controlDeviceAvailability(static_cast<uint8_t>(controlChannel)));
 }
 
 /*----------------------------------------------------------------------
@@ -938,15 +942,15 @@ ANT::sendMessage(ANTMessage m) {
 //fprintf(stderr, "\n");
 
     struct timeval timestamp;
-    get_timeofday (&timestamp);
+    gettimeofday (&timestamp, nullptr);
     unsigned char RS='S';
     emit sentAntMessage(RS, m, timestamp);
 
-    rawWrite((uint8_t*)m.data, m.length);
+    rawWrite(reinterpret_cast<uint8_t*>(m.data), m.length);
 
     // this padding is important - do not remove it
     // we need to be sure the message is at least 12 bytes
-    rawWrite((uint8_t*)padding, 5);
+    rawWrite(const_cast<uint8_t*>(padding), 5);
 }
 
 void
@@ -1197,14 +1201,14 @@ int ANT::openPort()
     return 0;
 }
 
-int ANT::rawWrite(uint8_t *bytes, int size) // unix!!
+ssize_t ANT::rawWrite(uint8_t *bytes, int size) // unix!!
 {
 #if !GC_HAVE_LIBUSB
     Q_UNUSED(bytes);
     Q_UNUSED(size);
 #endif
 
-    int rc=0;
+    ssize_t rc=0;
 
 #ifdef WIN32
 #ifdef GC_HAVE_LIBUSB
@@ -1231,7 +1235,7 @@ int ANT::rawWrite(uint8_t *bytes, int size) // unix!!
 
 #ifdef GC_HAVE_LIBUSB
     if (usbMode == USB2) {
-        return usb2->write((char *)bytes, size);
+        return usb2->write(reinterpret_cast<char *>(bytes), size);
     }
 
     if (usbMode == USB1) {
@@ -1240,7 +1244,7 @@ int ANT::rawWrite(uint8_t *bytes, int size) // unix!!
         ioctl(devicePort, FIONREAD, &ibytes);
 
         // timeouts are less critical for writing, since vols are low
-        rc= write(devicePort, bytes, size);
+        rc= write(devicePort, bytes, static_cast<size_t>(size));
 
         if (rc != -1) tcdrain(devicePort); // wait till its gone.
 
@@ -1277,7 +1281,7 @@ int ANT::rawRead(uint8_t bytes[], int size)
 
 #ifdef GC_HAVE_LIBUSB
     if (usbMode == USB2) {
-        return usb2->read((char *)bytes, size);
+        return usb2->read(reinterpret_cast<char *>(bytes), size);
     }
 #endif
     int i=0;
@@ -1286,7 +1290,7 @@ int ANT::rawRead(uint8_t bytes[], int size)
     // read one byte at a time sleeping when no data ready
     // until we timeout waiting then return error
     for (i=0; i<size; i++) {
-        int rc = read(devicePort, &byte, 1);
+        ssize_t rc = read(devicePort, &byte, 1);
         if (rc == -1 || rc == 0) return -1; // error!
         else bytes[i] = byte;
     }
@@ -1303,7 +1307,7 @@ int ANT::interpretSuffix(char c)
 
     do {
         if (st->suffix==c) return st->type;
-    } while (++st, st->type != ANTChannel::CHANNEL_TYPE_GUARD);
+    } while (static_cast<void>(++st), st->type != ANTChannel::CHANNEL_TYPE_GUARD);
 
     return -1;
 }
@@ -1315,7 +1319,7 @@ char ANT::deviceIdCode(int type)
 
     do {
         if (st->type==type) return st->suffix;
-    } while (++st, st->type != ANTChannel::CHANNEL_TYPE_GUARD);
+    } while (static_cast<void>(++st), st->type != ANTChannel::CHANNEL_TYPE_GUARD);
     return '-';
 }
 
@@ -1326,7 +1330,7 @@ char ANT::deviceTypeCode(int type)
 
     do {
         if (st->device_id==type) return st->suffix;
-    } while (++st, st->type != ANTChannel::CHANNEL_TYPE_GUARD);
+    } while (static_cast<void>(++st), st->type != ANTChannel::CHANNEL_TYPE_GUARD);
     return '-';
 }
 
@@ -1337,7 +1341,7 @@ const char * ANT::deviceTypeDescription(int type)
 
     do {
         if (st->device_id==type) return st->descriptive_name;
-    } while (++st, st->type != ANTChannel::CHANNEL_TYPE_GUARD);
+    } while (static_cast<void>(++st), st->type != ANTChannel::CHANNEL_TYPE_GUARD);
     return "Unknown device type";
 }
 
@@ -1368,10 +1372,10 @@ void ANT::blacklistSensor(int device_number, int device_id)
     for (int i=0; i<channels; i++) {
         if ((antChannel[i]->device_number == device_number) && (antChannel[i]->device_id == device_id)) {
             if (!antChannel[i]->blacklisted) {
-                char *name = NULL;
+                char *name = nullptr;
                 for (int j=0; ant_sensor_types[j].suffix !=  '\0'; j++) {
                     if (ant_sensor_types[j].device_id == device_id)
-                        name = (char*)ant_sensor_types[j].descriptive_name;
+                        name = const_cast<char*>(ant_sensor_types[j].descriptive_name);
                 }
 
                 if (name)

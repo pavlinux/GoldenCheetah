@@ -17,6 +17,8 @@
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#pragma once
+
 #ifndef gc_ANT_h
 #define gc_ANT_h
 
@@ -108,28 +110,31 @@ typedef struct ant_sensor_type {
 #define ANT_SPORT_NETWORK_NUMBER 1
 #define RX_BURST_DATA_LEN 128
 
-static inline double get_timestamp( void ) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+static double get_timestamp( void ) {
   struct timeval tv;
 #ifdef Q_CC_MSVC
   QDateTime now = QDateTime::currentDateTime();
   tv.tv_sec = now.toMSecsSinceEpoch() / 1000;
   tv.tv_usec = (now.toMSecsSinceEpoch() % 1000) * 1000;
 #else
-  gettimeofday(&tv, NULL);
+  gettimeofday(&tv, nullptr);
 #endif
   return tv.tv_sec * 1.0 + tv.tv_usec * 1.0e-6;
 }
 
-static inline void get_timeofday(struct timeval* tv) {
+static void get_timeofday(struct timeval* tv) {
 #ifdef Q_CC_MSVC
   QDateTime now = QDateTime::currentDateTime();
   tv->tv_sec = now.toMSecsSinceEpoch() / 1000;
   tv->tv_usec = (now.toMSecsSinceEpoch() % 1000) * 1000;
 #else
-  gettimeofday(tv, NULL);
+  gettimeofday(tv, nullptr);
 #endif
 }
-
+#pragma GCC diagnostic pop
 
 struct setChannelAtom {
     setChannelAtom() : channel(0), device_number(0), channel_type(0) {}
@@ -407,7 +412,7 @@ class ANT : public QThread
 
 
 public:
-    ANT(QObject *parent = 0, DeviceConfiguration *dc=0, QString athlete="");
+    ANT(QObject *parent = nullptr, DeviceConfiguration *dc=nullptr, QString athlete="");
     ~ANT();
 
     // device settings
@@ -588,7 +593,7 @@ public:
     int openPort();
     int closePort();
     int rawRead(uint8_t bytes[], int size);
-    int rawWrite(uint8_t *bytes, int size);
+    ssize_t rawWrite(uint8_t *bytes, int size);
 
     bool modeERGO(void) const;
     bool modeSLOPE(void) const;
@@ -598,16 +603,16 @@ public:
     double channelValue(int channel);
     double channelValue2(int channel);
     void setBPM(float x) {
-        telemetry.setHr(x);
+        telemetry.setHr(static_cast<double>(x));
     }
     void setCadence(float x) {
         lastCadenceMessage = QDateTime(QDateTime::currentDateTime());
-        telemetry.setCadence(x);
+        telemetry.setCadence(static_cast<double>(x));
     }
-    float getCadence(void) { return telemetry.getCadence(); }
+    float getCadence(void) { return static_cast<float>(telemetry.getCadence()); }
     void setSecondaryCadence(float x) {
         if (lastCadenceMessage.toTime_t() == 0 || (QDateTime::currentDateTime().toTime_t() - lastCadenceMessage.toTime_t())>10)  {
-            telemetry.setCadence(x);
+            telemetry.setCadence(static_cast<double>(x));
         }
     }
 
@@ -622,13 +627,13 @@ public:
     }
 
     void setWheelRpm(float x);
-    float getWheelRpm(void) { return telemetry.getWheelRpm(); }
+    float getWheelRpm(void) { return static_cast<float>(telemetry.getWheelRpm()); }
 
     void setWatts(float x) {
-        telemetry.setWatts(x);
+        telemetry.setWatts(static_cast<double>(x));
     }
     void setAltWatts(float x) {
-        telemetry.setAltWatts(x);
+        telemetry.setAltWatts(static_cast<double>(x));
     }
     void setHb(double smo2, double thb);
 

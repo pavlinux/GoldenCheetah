@@ -531,7 +531,7 @@ QDate QwtDate::dateOfWeek0( int year, Week0Type type )
  */
 int QwtDate::weekNumber( const QDate &date, Week0Type type )
 {
-    int weekNo;
+    long long weekNo;
 
     if ( type == QwtDate::FirstDay )
     {
@@ -542,8 +542,7 @@ int QwtDate::weekNumber( const QDate &date, Week0Type type )
     {
         weekNo = date.weekNumber();
     }
-
-    return weekNo;
+    return static_cast<int>(weekNo);
 }
 
 /*!
@@ -566,26 +565,21 @@ int QwtDate::weekNumber( const QDate &date, Week0Type type )
  */
 int QwtDate::utcOffset( const QDateTime &dateTime )
 {
-    int seconds = 0;
+    long long seconds = 0;
 
     switch( dateTime.timeSpec() )
     {
         case Qt::UTC:
-        {
             break;
-        }
         case Qt::OffsetFromUTC:
-        {
             seconds = dateTime.utcOffset();
-        }
+            break;
         default:
-        {
             const QDateTime dt1( dateTime.date(), dateTime.time(), Qt::UTC );
             seconds = dateTime.secsTo( dt1 );
-        }
+            break;
     }
-
-    return seconds;
+    return static_cast<int>(seconds);
 }
 
 /*!

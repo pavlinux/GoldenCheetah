@@ -122,12 +122,12 @@ GcWindowRegistry::initialize()
   GcWindows = GcWindowsInit;
 }
 
-QStringList windowsForType(int type)
+QStringList windowsForType(unsigned int type)
 {
     QStringList returning;
 
     for(int i=0; GcWindows[i].relevance; i++) {
-        if (GcWindows[i].relevance & type) 
+        if (GcWindows[i].relevance & type)
             returning << GcWindows[i].name;
     }
     return returning;
@@ -148,7 +148,7 @@ QList<GcWinID> idsForType(int type)
     QList<GcWinID> returning;
 
     for(int i=0; GcWindows[i].relevance; i++) {
-        if (GcWindows[i].relevance & type) 
+        if (GcWindows[i].relevance & static_cast<unsigned>(type))
             returning << GcWindows[i].id;
     }
     return returning;
@@ -158,7 +158,7 @@ QList<GcWinID> idsForType(int type)
 GcChartWindow *
 GcWindowRegistry::newGcWindow(GcWinID id, Context *context)
 {
-    GcChartWindow *returning = NULL;
+    GcChartWindow *returning = nullptr;
 
     switch(id) {
     case GcWindowTypes::Aerolab: returning = new AerolabWindow(context); break;
@@ -254,7 +254,7 @@ GcWindowRegistry::newGcWindow(GcWinID id, Context *context)
     case GcWindowTypes::Overview: returning = new GcChartWindow(context); break;
 #endif
     case GcWindowTypes::SeasonPlan: returning = new PlanningWindow(context); break;
-    default: return NULL; break;
+    default: return nullptr;
     }
     if (returning) returning->setProperty("type", QVariant::fromValue<GcWinID>(id));
     return returning;

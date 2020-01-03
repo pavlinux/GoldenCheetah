@@ -286,9 +286,9 @@ void Imagic::run()
     float brakeCalibrationFactor;
 
     // Internal variables
-    double curResistance = 0;             // Resistance level currently applied by brake
-    double curSpeedInternal = 0;          // Current speed in internal units
-    double lastGradient = 0;              // Previous gradient value set on imagic
+    double curResistance = 0.0l;             // Resistance level currently applied by brake
+    double curSpeedInternal = 0.0l;          // Current speed in internal units
+    double lastGradient = 0.0l;              // Previous gradient value set on imagic
 
     // we need to average out power for the last second
     // since we get updates every 10ms (100hz)
@@ -352,7 +352,7 @@ void Imagic::run()
              * For ergo or slope mode, this will set the brake resistance
              *************************************************************/
             double setResistance = 0;
-            int rc;
+            int rc = -1;
 
             pvars.lock();
             mode = this->mode;
@@ -371,19 +371,19 @@ void Imagic::run()
                 }
                 else {
                       // Calculate resistance reqd based on requested load and current speed
-                      setResistance = (((load / curSpeedInternal) - 0.2f) / 0.0036f);
+                      setResistance = (((load / curSpeedInternal) - 0.2) / 0.0036);
 
                       // Add in brake calibration factor
                       // The +1 is a cheap way to ensure we round up on conversion to integer
-                      setResistance = (setResistance * brakeCalibrationFactor) + 1;
+                      setResistance = (setResistance * static_cast<double>(brakeCalibrationFactor)) + 1.0;
 
                       // Check bounds
-                      if (setResistance < 30) setResistance = 30;
-                      else if (setResistance > 226) setResistance = 226;
+                      if (setResistance < 30) setResistance = 30.0;
+                      else if (setResistance > 226) setResistance = 226.0;
                 }
 
                 // Update the imagic resistance setting
-                rc = sendRunCommand(setResistance);
+                rc = sendRunCommand(static_cast<int>(setResistance));
             }
             else if (mode == IM_SSMODE)
             {
@@ -408,11 +408,11 @@ void Imagic::run()
                       // takes care of that
 
                       // Reference watts per speed unit value for 40kph on a flat road
-                      double refSpeedWatts = 300.0f/480.0f;
+                      double refSpeedWatts = 300.0l/480.0l;
 
                       // Calculate our current speed as a ratio to 40kph
                       // which is represented in internal speed units as 480
-                      double speedFactor = curSpeedInternal/480.0f;
+                      double speedFactor = curSpeedInternal/480.0;
                       // Apply this ratio to watts per unit speed figure
                       refSpeedWatts *= speedFactor;
 
@@ -436,19 +436,19 @@ void Imagic::run()
                       // the imagic maxes out at just under 4% for an 82kg rider anyway, the difference
                       // is minimal. Strictly speaking though, it does mean we set the resistance marginally
                       // higher than we should.
-                      double vertSpeed = (curSpeedInternal * gradient) / 100;
+                      double vertSpeed = (curSpeedInternal * gradient) / 100.0;
 
 
-                      vertSpeed = vertSpeed / (11.9f * 3.6f);
-                      double vertWatts = 9.8f * vertSpeed * weight;
+                      vertSpeed = vertSpeed / (11.9 * 3.6);
+                      double vertWatts = 9.8154 * vertSpeed * weight;
                       refSpeedWatts += (vertWatts / curSpeedInternal);
 
 
                       // Now apply the formula to convert watts/speed unit to a resistance setting
-                      setResistance = (refSpeedWatts - 0.2f) / 0.0036f;
+                      setResistance = (refSpeedWatts - 0.2)/0.0036;
 
                       // Add in brake calibration factor
-                      setResistance *= brakeCalibrationFactor;
+                      setResistance *= static_cast<double>(brakeCalibrationFactor);
 
                       // Check bounds
                       if (setResistance < 30) setResistance = 30;
@@ -615,7 +615,7 @@ int Imagic::sendCloseCommand()
 
 int Imagic::sendRunCommand(int resistance)
 {
-    Imagic_Command[0] = resistance;
+    Imagic_Command[0] = static_cast<uint8_t>(resistance);
     Imagic_Command[1] = 0x00;
     int retCode = rawWrite(Imagic_Command, 2);
     //qDebug() << "usb status " << retCode;

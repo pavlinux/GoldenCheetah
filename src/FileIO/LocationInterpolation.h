@@ -31,7 +31,7 @@ class v3
 
 public:
 
-    v3(double a, double b, double c) : m_t(a, b, c) {};
+    v3(double a, double b, double c) : m_t(a, b, c) {}
 
     v3(const v3& o) : m_t(o.m_t) {}
 
@@ -53,7 +53,7 @@ public:
     {
         double mag = magnitude();
 
-        if (mag == 0) {
+        if (std::equal_to<double>()(mag, double(0))) {
             // assert?
             mag = 1.0;
         }
@@ -193,6 +193,9 @@ public:
     xyz Interpolate(double frac);
 };
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshift-negative-value"
+
 // Visual studio has an error in how it compiles bitset that prevents
 // us from mixing it with qt headers >= 5.12.0. The toolchain error will
 // allegedly be fixed in vs2019 so roll our own for this very limited case.
@@ -206,10 +209,10 @@ template <size_t T_bitsize> class MyBitset
     unsigned popcnt(unsigned x) const {
         x = x - ((x >> 1) & 0x55555555);
         x = (x & 0x33333333) + ((x >> 2) & 0x33333333);  
-        return ((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+        return (((x + (x >> 4)) & 0xF0F0F0F) * 0x1010101) >> 24;
     }
 
-    void truncate() { m_mask &= (((unsigned)(-1 << (32 - T_bitsize))) >> (32 - T_bitsize)); }
+    void truncate() { m_mask &= static_cast<unsigned>(((-1 << (32 - T_bitsize))) >> (32 - T_bitsize));}
 
 public:
 
@@ -220,6 +223,7 @@ public:
     unsigned count() const                 { return popcnt(m_mask); }
     MyBitset<T_bitsize>& operator <<=(unsigned u) { m_mask <<= u; truncate(); return (*this); }
 };
+#pragma GCC diagnostic pop
 
 // 4 element sliding window to hold interpolation points
 template <typename T> class SlidingWindow
@@ -236,7 +240,7 @@ public:
         m_ElementExists.reset();
     }
 
-    unsigned Count() const { return (unsigned)m_ElementExists.count(); }
+    unsigned Count() const { return static_cast<unsigned>(m_ElementExists.count()); }
 
     T& pm1()               { return std::get<0>(m_Window); }
     T& p0()                { return std::get<1>(m_Window); }
