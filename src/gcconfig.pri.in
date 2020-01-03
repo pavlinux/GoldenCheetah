@@ -11,7 +11,7 @@ CONFIG += release
 # Uncomment when WebKit is not available (e.g. QT >= 5.6)
 #DEFINES += NOWEBKIT
 
-DEFINES += -lQt5WebEngineWidgets
+LIBS +=  -lQt5WebEngineWidgets
 
 # Uncomment below if you want an R chart
 # You will need R installed along with the Rcpp and RInside
@@ -179,7 +179,7 @@ LIBUSB_USE_V_1 = false # don't use on Windows
 # You *must* define VLC_INSTALL to use this feature.
 #VLC_INSTALL =
 #VLC_INCLUDE =
-VLC_LIBS    = -lvlc
+VLC_LIBS = -lvlc
 
 # *** Mac users NOTE ***
 # On MAC you don't need libvlc since we use the
@@ -196,9 +196,9 @@ VLC_LIBS    = -lvlc
 # some modifications in the build process to build with MSVC2015 
 # Code is available at: http://www.mega-nerd.com/SRC/
 #
-#SAMPLERATE_INSTALL = /usr/local
-#SAMPLERATE_INCLUDE = /usr/local/include
-#SAMPLERATE_LIBS = /usr/local/lib/libsamplerate.a
+SAMPLERATE_INSTALL = /usr/
+SAMPLERATE_INCLUDE = /usr/include
+SAMPLERATE_LIBS = /usr/lib/x86_64-linux-gnu/libsamplerate.a
 
 # If your system has PKG_CONFIG, QT can use this to get dependent libraries.
 # Add the names of libraries with PKG_CONFIG information.
