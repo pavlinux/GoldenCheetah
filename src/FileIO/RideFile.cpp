@@ -1022,6 +1022,8 @@ RideFile::xdataValue(RideFilePoint *p, int &idx, QString sxdata, QString series,
 
     // get index of series we care about
     int vindex = s->valuename.indexOf(series);
+    if (vindex < 0)
+	return RideFile::NA;
 
     // where are we in the ride?
     double secs = p->secs;
@@ -1047,7 +1049,7 @@ RideFile::xdataValue(RideFilePoint *p, int &idx, QString sxdata, QString series,
             break;
 
         case REPEAT:
-            if (idx && vindex >= 0) returning = s->datapoints[idx-1]->number[vindex];
+            if (idx) returning = s->datapoints[idx-1]->number[vindex];
             else  returning = RideFile::NIL;
             break;
         }
@@ -1072,7 +1074,8 @@ RideFile::xdataValue(RideFilePoint *p, int &idx, QString sxdata, QString series,
                 double ratio = diff/gap;
                 double vgap = s->datapoints[idx]->number[vindex] - s->datapoints[idx-1]->number[vindex];
                 returning = s->datapoints[idx-1]->number[vindex] + (vgap * ratio);
-            }
+            } else
+        	returning = RideFile::NIL;
             break;
 
         case SPARSE:
