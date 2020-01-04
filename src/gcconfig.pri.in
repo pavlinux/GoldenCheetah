@@ -49,7 +49,7 @@ PYTHONLIBS = -L/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu -L/usr/lib -lpyth
 # To compile translation you need QT tool - lrelease
 # If it is not found using he defaults in src/src.pro
 # then set the full path and filename here.
-QMAKE_LRELEASE = /usr/bin/lrelease
+#QMAKE_LRELEASE = /usr/bin/lrelease
 
 # MSVC needs the WINDOWS KIT libraries for the memory model you are building
 #WINKIT_INSTALL= "C:/Program Files (x86)/Windows Kits/8.1/Lib/winv6.3/um/x64"
