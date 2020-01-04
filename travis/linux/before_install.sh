@@ -36,7 +36,7 @@ sudo make install
 cd ${TRAVIS_BUILD_DIR}
 
 # LIBUSB
-sudo apt-get install -qq libusb-1.0-0-dev libudev-dev
+sudo apt-get install -qq libusb-1.0-0-dev libudev-dev libusb-1.0-0 libusb-dev
 
 # Add Python 3.6 and SIP
 sudo add-apt-repository -y ppa:deadsnakes/ppa
