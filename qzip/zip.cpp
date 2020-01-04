@@ -735,9 +735,10 @@ void ZipWriterPrivate::addEntry(EntryType type, const QString &fileName, const Q
 */
 ZipReader::ZipReader(const QString &archive, QIODevice::OpenMode mode)
 {
-    QScopedPointer<QFile> f(new QFile(archive));
-    f->open(mode);
     ZipReader::Status status;
+    QScopedPointer<QFile> f(new QFile(archive));
+
+    f->open(mode);
     if (f->error() == QFile::NoError)
         status = NoError;
     else {

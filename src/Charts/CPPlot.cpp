@@ -697,7 +697,7 @@ CPPlot::plotModel()
 
         for (int i=1; i<bestsCache->meanMaxArray(rideSeries).count(); i++) {
             QDate date = bestsCache->meanMaxDates(rideSeries)[i];
-            double heat = 1000*(bestsCache->start.daysTo(bestsCache->end)-date.daysTo(bestsCache->end))/(bestsCache->start.daysTo(bestsCache->end));
+            double heat = 1000.0l*(bestsCache->start.daysTo(bestsCache->end)-date.daysTo(bestsCache->end))/static_cast<double>(bestsCache->start.daysTo(bestsCache->end));
 
             QwtPoint3D add(i/60.00f, bestsCache->meanMaxArray(rideSeries)[i], heat);
 

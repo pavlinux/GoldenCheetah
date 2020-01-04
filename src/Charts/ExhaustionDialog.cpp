@@ -140,6 +140,7 @@ ExhaustionDialog::addClicked()
     parent->refreshExhaustionsForAllPlots();
     parent->plotTmpExhaustion(0); //unplot
 
+    delete refPoint;
     done(1);
 }
 

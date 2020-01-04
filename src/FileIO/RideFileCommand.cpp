@@ -87,6 +87,7 @@ RideFileCommand::insertPoint(int index, RideFilePoint *points)
 {
     InsertPointCommand *cmd = new InsertPointCommand(ride, index, points);
     doCommand(cmd);
+    delete points;
 }
 
 void

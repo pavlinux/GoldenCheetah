@@ -1018,8 +1018,8 @@ PowerHist::binData(HistData &standard, QVector<double>&x, // x-axis for data
                                        QVector<double>&sx, // x-axis for selected data
                                        QVector<double>&sy) // y-axis for selected data
 {
-    QVector<unsigned int> *array = NULL;
-    QVector<unsigned int> *selectedArray = NULL;
+    QVector<unsigned int> *array = nullptr;
+    QVector<unsigned int> *selectedArray = nullptr;
     int arrayLength = 0;
 
     if (source == Metric) {
@@ -1027,7 +1027,6 @@ PowerHist::binData(HistData &standard, QVector<double>&x, // x-axis for data
         // we use the metricArray
         array = &standard.metricArray;
         arrayLength = standard.metricArray.size();
-        selectedArray = NULL;
 
     } else if (series == RideFile::watts && zoned == false) {
 
@@ -1182,10 +1181,14 @@ PowerHist::binData(HistData &standard, QVector<double>&x, // x-axis for data
         // we're not binning instead we are prettyfing the columnar
         // display in much the same way as the weekly summary workds
         // Each zone column will have 4 points
-        x.resize(array->size() * 4);
-        y.resize(array->size() * 4);
+        if (array) {
+    		x.resize(array->size() * 4);
+    		y.resize(array->size() * 4);
+        }
+        if (selectedArray) {
         sx.resize(selectedArray->size() * 4);
         sy.resize(selectedArray->size() * 4);
+        }
 
         // so we can calculate percentage for the labels
         double total=0;
