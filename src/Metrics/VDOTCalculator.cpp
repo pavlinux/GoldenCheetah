@@ -244,9 +244,10 @@ void VDOTCalculator::on_btnCalculate_clicked()
     double vVDOT = vVdot(VDOT);
 
     // Training Paces relative to vVDOT from Daniels's Running Formula
-    double relVDOT[] = { 0.72, 0.85, 0.9, 0.98, 1.05 };
-    double relVDOT200[] = { 0.72, 0.85, 0.9, 0.98, 1.07 };
-    for (int i = 0; i < tableWidgetTPACE->rowCount(); i++) {
+    double relVDOT[5]    = { 0.72, 0.85, 0.9, 0.98, 1.05 };
+    double relVDOT200[5] = { 0.72, 0.85, 0.9, 0.98, 1.07 };
+
+    for (int i = 0; i < tableWidgetTPACE->rowCount() && i < 5; i++) {
         // 200 m
         double pace200 = 200.0*60.0/vVDOT/relVDOT200[i];
         tableWidgetTPACE->item(i, 0)->setData(Qt::EditRole, QString("%1")
