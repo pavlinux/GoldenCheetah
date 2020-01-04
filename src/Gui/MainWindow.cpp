@@ -194,7 +194,7 @@ MainWindow::MainWindow(const QDir &home)
          // first run -- lets set some sensible defaults...
          // lets put it in the middle of screen 1
         QRect screenSize = desktop->availableGeometry();
-         struct SizeSettings app = GCColor::defaultSizes(screenSize.height(), screenSize.width());
+         struct SizeSettings app = GCColor::defaultSizes(screenSize.width(), screenSize.height());
 
          // center on the available screen (minus toolbar/sidebar)
          move((screenSize.width()-screenSize.x())/2 - app.width/2,
