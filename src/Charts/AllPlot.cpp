@@ -7512,8 +7512,7 @@ AllPlot::plotTmpReference(QwtAxisId axis, int x, int y, RideFile::SeriesType ser
                 plot->replot();
             }
         }
-
-
+	delete referencePoint;
     } else  {
 
         // wipe any we don't want
@@ -7550,6 +7549,7 @@ AllPlot::plotTmpReference(QwtAxisId axis, int x, int y, RideFile::SeriesType ser
             plot->standard->tmpReferenceLines.clear();
         }
     }
+
 }
 
 void
