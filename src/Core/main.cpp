@@ -156,7 +156,9 @@ void nostderr(QString dir)
     QFile fp(QString("%1/goldencheetah.log").arg(dir));
     if (fp.open(QIODevice::WriteOnly|QIODevice::Truncate) == true) {
         close(STDERR_FILENO);
-        if(dup(fp.handle()) != STDERR_FILENO) fprintf(stderr, "GoldenCheetah: cannot redirect stderr\n");
+        int fd = dup(fp.handle());
+        if(fd != STDERR_FILENO) fprintf(stderr, "GoldenCheetah: cannot redirect stderr\n");
+        close(fd);
         fp.close();
     } else {
         fprintf(stderr, "GoldenCheetah: cannot redirect stderr\n");
