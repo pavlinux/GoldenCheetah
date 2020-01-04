@@ -86,7 +86,7 @@ void KettlerRacerConnection::run()
         QByteArray data = m_serial->readAll();
         data.clear();
         // find kettler racer
-        bool found;
+        bool found = false;
         for(int i=0; i<4; i++)
         {
             // Read id from bike
