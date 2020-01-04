@@ -563,34 +563,33 @@ void QwtThermo::drawLiquid(
         else
             qSort( values.begin(), values.end(), qLess<double>() );
 
-        int from;
         if ( !values.isEmpty() )
         {
-            from = qRound( scaleMap.transform( values[0] ) );
+	    int from = qRound( scaleMap.transform( values[0] ) );
             qwtDrawLine( painter, from,
                 d_data->colorMap->color( interval, values[0] ),
                 pipeRect, liquidRect, d_data->orientation );
-        }
 
-        for ( int i = 1; i < values.size(); i++ )
-        {
-            const int to = qRound( scaleMap.transform( values[i] ) );
+    	    for ( int i = 1; i < values.size(); i++ )
+    	    {
+        	const int to = qRound( scaleMap.transform( values[i] ) );
 
-            for ( int pos = from + 1; pos < to; pos++ )
-            {
-                const double v = scaleMap.invTransform( pos );
+        	for ( int pos = from + 1; pos < to; pos++ )
+        	{
+            	    const double v = scaleMap.invTransform( pos );
 
-                qwtDrawLine( painter, pos, 
-                    d_data->colorMap->color( interval, v ),
-                    pipeRect, liquidRect, d_data->orientation );
-            }
+            	    qwtDrawLine( painter, pos, 
+                	d_data->colorMap->color( interval, v ),
+                	pipeRect, liquidRect, d_data->orientation );
+        	}
 
-            qwtDrawLine( painter, to,
-                d_data->colorMap->color( interval, values[i] ),
-                pipeRect, liquidRect, d_data->orientation );
+        	qwtDrawLine( painter, to,
+            	    d_data->colorMap->color( interval, values[i] ),
+            	    pipeRect, liquidRect, d_data->orientation );
 
-            from = to;
-        }
+        	    from = to;
+	    }
+	}
     }
     else
     {
