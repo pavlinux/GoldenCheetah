@@ -822,7 +822,7 @@ ColorLabel::paintEvent(QPaintEvent *)
     QRectF allF(0,0,width(),height());
     QRect all(0,0,width(),height());
 
-    const double x = width() / 5; 
+    const double x = width() / 5.0l;
     const double y = height();
 
     // now do all the color blocks
