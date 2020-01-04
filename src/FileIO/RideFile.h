@@ -115,7 +115,7 @@ class RideFileInterval
         static QString typeDescriptionLong(IntervalType);              // return a longer string to represent the type
         static qint32 intervalTypeBits(IntervalType);                  // returns the bit value or'ed into GC_DISCOVERY
 
-        QString typeString;
+        //QString typeString;
         IntervalType type;
         double start, stop;
         QString name;
