@@ -191,7 +191,7 @@ void Computrainer::getTelemetry(double &power, double &heartrate, double &cadenc
 void Computrainer::getSpinScan(double spinData[])
 {
     pvars.lock();
-    for (int i=0; i<24; spinData[i] = this->spinScan[i]) ;
+    for (int i=0; i<24; spinData[i] = this->spinScan[i], i++) ;
     pvars.unlock();
 }
 
