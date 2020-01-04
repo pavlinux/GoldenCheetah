@@ -137,8 +137,8 @@ pt_read_raw(FILE *in, void *context,
     unsigned wheel_sz_mm = 0;
     double rec_int_secs = 0.0;
     int i, n, row = 0;
-    unsigned char buf[6];
-    unsigned sbuf[6];
+    unsigned char buf[6] = {0x00};
+    unsigned int sbuf[6] = {0x00};
     double meters = 0.0;
     double secs = 0.0, start_secs = 0.0;
     double miles;
@@ -157,7 +157,7 @@ pt_read_raw(FILE *in, void *context,
             sbuf, sbuf+1, sbuf+2, sbuf+3, sbuf+4, sbuf+5)) == 6) {
         ++row;
         for (i = 0; i < 6; ++i) {
-            if (sbuf[i] > 0xff) { n = 1; break; }
+            if (sbuf[i] > 0xff) { n = 1; break; /* FIXME: maybe continue ??? */ }
             buf[i] = sbuf[i];
         }
         if (row == 1)
