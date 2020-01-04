@@ -1047,7 +1047,7 @@ RideFile::xdataValue(RideFilePoint *p, int &idx, QString sxdata, QString series,
             break;
 
         case REPEAT:
-            if (idx) returning = s->datapoints[idx-1]->number[vindex];
+            if (idx && vindex >= 0) returning = s->datapoints[idx-1]->number[vindex];
             else  returning = RideFile::NIL;
             break;
         }
