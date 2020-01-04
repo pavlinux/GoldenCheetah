@@ -278,5 +278,5 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
 
         i++;
     }
-
+    delete polygon;
 }
