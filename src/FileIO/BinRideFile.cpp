@@ -495,7 +495,7 @@ struct BinFileReaderState
         int i = 0;
 
         double secs = 0.0;
-        int temperature_count = 0;
+        unsigned int temperature_count = 1;
         double temperature = 0.0;
 
         foreach(const BinField &field, def.fields) {
@@ -507,7 +507,7 @@ struct BinFileReaderState
                     case FORMAT_ID__TEMPERATURE :
                         // use for average
                         temperature += value/10.0;
-                        temperature_count ++;
+                        ++temperature_count;
 
                         rideFile->dataPoints().at(rideFile->timeIndex(secs))->temp = temperature;
                         rideFile->setDataPresent(RideFile::temp, true);
