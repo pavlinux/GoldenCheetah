@@ -485,7 +485,7 @@ struct RideFilePoint
                       hrd(0.0), cadd(0.0), kphd(0.0), nmd(0.0), wattsd(0.0),
                       rvert(0.0), rcad(0.0), rcontact(0.0), tcore(0.0),
                       interval(0), xp(0), np(0),
-                      apower(0), atiss(0.0), antiss(0.0), gear(0.0), hhb(0.0), o2hb(0.0) {}
+                      apower(0), atiss(0.0), antiss(0.0), gear(0.0), hhb(0.0), o2hb(0.0), clength(0.0l) {}
 
     // create point supplying all values
     RideFilePoint(double secs, double cad, double hr, double km, double kph,
