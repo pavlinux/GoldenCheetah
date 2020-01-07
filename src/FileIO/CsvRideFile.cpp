@@ -1431,6 +1431,7 @@ RideFile *CsvFileReader::openRideFile(QFile &file, QStringList &errors, QList<Ri
                 p->number[0] = values.at(2).toDouble();
 
                 rrSeries->datapoints.append(p);
+                delete p;
             }
 
             // onto next line
@@ -1444,6 +1445,7 @@ RideFile *CsvFileReader::openRideFile(QFile &file, QStringList &errors, QList<Ri
     if (rrSeries->datapoints.count() > 0) rideFile->addXData("HRV", rrSeries);
 
     // all done
+    delete rrSeries;
     return rideFile;
 }
 
