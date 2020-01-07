@@ -1247,8 +1247,9 @@ LTMWindow::pointClicked(QwtPlotCurve*curve, int index)
       LTMScaleDraw *lsd = new LTMScaleDraw(settings.start,
                           groupForDate(settings.start.date()),
                           settings.groupBy);
-      lsd->dateRange((int)round(curve->sample(index).x()), start, end); }
-    else {
+      lsd->dateRange((int)round(curve->sample(index).x()), start, end);
+      delete lsd;
+    } else {
       // special treatment for LTM_TOD as time dependent grouping
       time = QTime((int)round(curve->sample(index).x()), 0, 0, 0);
     }
