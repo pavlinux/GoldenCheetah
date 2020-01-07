@@ -407,6 +407,7 @@ find_devices(char *result[], int capacity)
             ++count;
         }
     }
+    closedir(dirp);
     return count;
 }
 #else
