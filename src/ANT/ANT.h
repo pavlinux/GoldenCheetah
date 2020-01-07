@@ -113,7 +113,7 @@ typedef struct ant_sensor_type {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-static double get_timestamp( void ) {
+static __attribute__((unused)) double get_timestamp( void ) {
   struct timeval tv;
 #ifdef Q_CC_MSVC
   QDateTime now = QDateTime::currentDateTime();
@@ -125,7 +125,7 @@ static double get_timestamp( void ) {
   return tv.tv_sec * 1.0 + tv.tv_usec * 1.0e-6;
 }
 
-static void get_timeofday(struct timeval* tv) {
+static __attribute__((unused)) void get_timeofday(struct timeval* tv) {
 #ifdef Q_CC_MSVC
   QDateTime now = QDateTime::currentDateTime();
   tv->tv_sec = now.toMSecsSinceEpoch() / 1000;
@@ -134,7 +134,6 @@ static void get_timeofday(struct timeval* tv) {
   gettimeofday(tv, nullptr);
 #endif
 }
-#pragma GCC diagnostic pop
 
 struct setChannelAtom {
     setChannelAtom() : channel(0), device_number(0), channel_type(0) {}
@@ -754,5 +753,5 @@ private:
 
 #include "ANTMessage.h"
 #include "ANTChannel.h"
-
+#pragma GCC diagnostic pop
 #endif
