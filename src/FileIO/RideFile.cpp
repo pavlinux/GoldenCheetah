@@ -1468,7 +1468,7 @@ void RideFile::appendOrUpdatePoint(double secs, double cad, double hr, double km
     }
 
     if (forceAppend) {
-        RideFilePoint* point = new RideFilePoint(secs, cad, hr, km, kph, nm, watts, alt, lon, lat,
+        RideFilePoint* force_point = new RideFilePoint(secs, cad, hr, km, kph, nm, watts, alt, lon, lat,
                                                  headwind, slope, temp,
                                                  lrbalance,
                                                  lte, rte, lps, rps,
@@ -1479,7 +1479,8 @@ void RideFile::appendOrUpdatePoint(double secs, double cad, double hr, double km
                                                  rvert, rcad, rcontact, tcore,
                                                  interval);
 
-        dataPoints_.append(point);
+        dataPoints_.append(force_point);
+        delete force_point;
     }
 
     dataPresent.secs     |= (secs != 0);
@@ -1521,6 +1522,7 @@ void RideFile::appendOrUpdatePoint(double secs, double cad, double hr, double km
     updateMin(point);
     updateMax(point);
     updateAvg(point);
+    delete point;
 }
 
 void RideFile::appendPoint(const RideFilePoint &point)
