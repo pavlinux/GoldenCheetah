@@ -38,7 +38,7 @@ public:
     WBParms() : CP(0), W(0), TAU(0) {}
     WBParms(double CP, double W, double TAU) : CP(CP), W(W), TAU(TAU) {}
     double CP, W, TAU; // the parameters
-    double wpbal; // the result (used to pass back)
+    double wpbal = 0.0l; // the result (used to pass back)
 };
 
 class CPSolverConstraints {
@@ -118,7 +118,7 @@ class CPSolver : public QObject {
         WBParms s0, sbest;
 
         // to signal we need to stop
-        bool halt;
+        bool halt = false;
 };
 
 #endif
