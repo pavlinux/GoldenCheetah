@@ -142,6 +142,7 @@ ReferenceLineDialog::addClicked()
 
     parent->refreshReferenceLinesForAllPlots();
     parent->plotTmpReference(axis, 0, 0, RideFile::watts); //unplot
+    delete refPoint;
     done(1);
 }
 
