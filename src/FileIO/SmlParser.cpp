@@ -23,10 +23,10 @@
 
 #include <QString>
 #include <QDebug>
+#include <cmath>
 
 #include "SmlParser.h"
 #include "TimeUtils.h"
-#include <cmath>
 
 #define SMLdebug false // Lap Swimming debug
 
@@ -57,6 +57,7 @@ SmlParser::SmlParser(RideFile* rideFile) : rideFile(rideFile)
     swimXdata->valuename << "TYPE";
     swimXdata->valuename << "DURATION";
     swimXdata->valuename << "STROKES";
+    swimXdata->time = 0.0l;
 }
 
 bool
@@ -88,16 +89,12 @@ SmlParser::startElement(const QString&, const QString&,
     return true;
 }
 
-#define PI 3.14159265
-inline double toRadians(double degrees)
-{
-    return degrees * PI / 180;
+#ifndef M_PIl /* math.h */
+#define M_PIl 3.14159265358979323846
+#endif
 
-}
-inline double toDegrees(double radians)
-{
-    return radians * 180.0 / PI;
-}
+#define toRadians(degrees) ((degrees) * M_PIl / 180.0l)
+#define toDegrees(radians) ((radians) * 180.0l / M_PIl)
 
 bool
 SmlParser::endElement(const QString&, const QString&, const QString& qName)
