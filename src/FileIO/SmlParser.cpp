@@ -51,13 +51,13 @@ SmlParser::SmlParser(RideFile* rideFile) : rideFile(rideFile)
     lap = 0;
     strokes = 0;
     style = 0;
+    time = 0;
 
     swimXdata = new XDataSeries();
     swimXdata->name = "SWIM";
     swimXdata->valuename << "TYPE";
     swimXdata->valuename << "DURATION";
     swimXdata->valuename << "STROKES";
-    swimXdata->time = 0.0l;
 }
 
 bool
