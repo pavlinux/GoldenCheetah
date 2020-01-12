@@ -448,7 +448,6 @@ void QwtPlotCurve::drawLines( QPainter *painter,
 {
     if ( from > to )
         return;
-
     const bool doAlign = QwtPainter::roundingAlignment( painter );
     const bool doFit = ( d_data->attributes & Fitted ) && d_data->curveFitter;
     const bool doFill = ( d_data->brush.style() != Qt::NoBrush )
@@ -461,10 +460,8 @@ void QwtPlotCurve::drawLines( QPainter *painter,
         clipRect = canvasRect.adjusted(-pw, -pw, pw, pw);
     }
 
-    bool doIntegers = false;
-
 #if QT_VERSION < 0x040800
-
+    bool doIntegers = false;
     // For Qt <= 4.7 the raster paint engine is significantly faster
     // for rendering QPolygon than for QPolygonF. So let's
     // see if we can use it.
@@ -476,7 +473,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
         // then drawing the polyline itself
 
         if ( !doFit && !doFill )
-            doIntegers = true; 
+            doIntegers = true;
     }
 #endif
 
@@ -487,6 +484,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
     mapper.setFlag( QwtPointMapper::WeedOutPoints, noDuplicates );
     mapper.setBoundingRect( canvasRect );
 
+#if QT_VERSION < 0x040800
     if ( doIntegers )
     {
         const QPolygon polyline = mapper.toPolygon( 
@@ -505,6 +503,7 @@ void QwtPlotCurve::drawLines( QPainter *painter,
         }
     }
     else
+#endif
     {
         QPolygonF polyline = mapper.toPolygonF( xMap, yMap,
             data(), from, to );
