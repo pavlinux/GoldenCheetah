@@ -496,11 +496,11 @@ struct RideFilePoint
                   double lpco, double rpco,
                   double lppb, double rppb, double lppe, double rppe,
                   double lpppb, double rpppb, double lpppe, double rpppe,
-                  double smo2, double thb, 
+                  double smo2, double thb,
                   double rvert, double rcad, double rcontact, double(tcore),
                   int interval) :
 
-        secs(secs), cad(cad), hr(hr), km(km), kph(kph), nm(nm), watts(watts), alt(alt), lon(lon), 
+        secs(secs), cad(cad), hr(hr), km(km), kph(kph), nm(nm), watts(watts), alt(alt), lon(lon),
         lat(lat), headwind(headwind), slope(slope), temp(temp),
         lrbalance(lrbalance),
         lte(lte), rte(rte), lps(lps), rps(rps),
@@ -508,9 +508,9 @@ struct RideFilePoint
         lppb(lppb), rppb(rppb), lppe(lppe), rppe(rppe),
         lpppb(lpppb), rpppb(rpppb), lpppe(lpppe), rpppe(rpppe),
         smo2(smo2), thb(thb),
-        hrd(0.0), cadd(0.0), kphd(0.0), nmd(0.0), wattsd(0.0), 
-        rvert(rvert), rcad(rcad), rcontact(rcontact), tcore(tcore), interval(interval), 
-        xp(0), np(0), apower(0), atiss(0.0), antiss(0.0), gear(0.0),hhb(0.0),o2hb(0.0) {}
+        hrd(0.0), cadd(0.0), kphd(0.0), nmd(0.0), wattsd(0.0),
+        rvert(rvert), rcad(rcad), rcontact(rcontact), tcore(tcore), interval(interval),
+        xp(0), np(0), apower(0), atiss(0.0), antiss(0.0), gear(0.0), hhb(0.0), o2hb(0.0), clength(0.0l) {}
 
     // get the value via the series type rather than access direct to the values
     double value(RideFile::SeriesType series) const;

@@ -112,6 +112,9 @@ GSettings::GSettings(QString file, QSettings::Format format) : newFormat(false){
 
 GSettings::~GSettings() {
     syncQSettings();
+
+    if (global)
+	delete global;
 }
 
 

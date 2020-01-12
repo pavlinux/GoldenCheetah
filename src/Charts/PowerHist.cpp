@@ -51,7 +51,7 @@ PowerHist::PowerHist(Context *context, bool rangemode) :
     minX(0),
     maxX(0),
     rangemode(rangemode),
-    rideItem(NULL),
+    rideItem(nullptr),
     context(context),
     series(RideFile::watts),
     lny(false),
@@ -62,7 +62,7 @@ PowerHist::PowerHist(Context *context, bool rangemode) :
     withz(true),
     dt(1),
     absolutetime(true),
-    cache(NULL),
+    cache(nullptr),
     source(Ride)
 {
     binw = appsettings->value(this, GC_HIST_BIN_WIDTH, 5).toInt();
@@ -413,7 +413,7 @@ PowerHist::recalcCompare()
 
         HistData &cid = compareData[intervalNumber];
         QwtPlotCurve *curve = compareCurves[intervalNumber];
-        QVector<unsigned int> *array = NULL;
+        QVector<unsigned int> *array = nullptr;
         int arrayLength = 0;
 
         if (source == Metric) {
@@ -598,7 +598,7 @@ PowerHist::recalcCompare()
 
             QFont labelFont;
             labelFont.fromString(appsettings->value(this, GC_FONT_CHARTLABELS, QFont().toString()).toString());
-            labelFont.setPointSize(appsettings->value(NULL, GC_FONT_CHARTLABELS_SIZE, 8).toInt());
+            labelFont.setPointSize(appsettings->value(nullptr, GC_FONT_CHARTLABELS_SIZE, 8).toInt());
 
             // 0.625 = golden ratio for gaps between group of cols
             // 0.9 = 10% space between each col in group
@@ -874,7 +874,7 @@ PowerHist::recalc(bool force)
 
         QFont labelFont;
         labelFont.fromString(appsettings->value(this, GC_FONT_CHARTLABELS, QFont().toString()).toString());
-        labelFont.setPointSize(appsettings->value(NULL, GC_FONT_CHARTLABELS_SIZE, 10).toInt());
+        labelFont.setPointSize(appsettings->value(nullptr, GC_FONT_CHARTLABELS_SIZE, 10).toInt());
 
         // zoned labels
         for(int i=1; i<x.count(); i += 4) {
@@ -1186,8 +1186,8 @@ PowerHist::binData(HistData &standard, QVector<double>&x, // x-axis for data
     		y.resize(array->size() * 4);
         }
         if (selectedArray) {
-        sx.resize(selectedArray->size() * 4);
-        sy.resize(selectedArray->size() * 4);
+    		sx.resize(selectedArray->size() * 4);
+		sy.resize(selectedArray->size() * 4);
         }
 
         // so we can calculate percentage for the labels
@@ -1409,7 +1409,7 @@ void
 PowerHist::intervalHover(IntervalItem *x)
 {
     // telling me to hide
-    if (x == NULL) {
+    if (x == nullptr) {
         curveHover->hide();
         return;
     }
@@ -1708,7 +1708,7 @@ PowerHist::setData(Specification specification, QString totalMetric, QString dis
     const RideMetricFactory &factory = RideMetricFactory::instance();
     const RideMetric *m = factory.rideMetric(distMetric);
     const RideMetric *tm = factory.rideMetric(totalMetric);
-    if (m == NULL || tm == NULL) return;
+    if (m == nullptr || tm == nullptr) return;
 
     // metricX, metricY
     metricX = distMetric;
@@ -1803,7 +1803,7 @@ PowerHist::setData(Specification specification, QString totalMetric, QString dis
     // now set all the plot parameters to match the data
     source = Metric;
     zoned = false;
-    rideItem = NULL;
+    rideItem = nullptr;
     lny = false;
     shade = false;
     withz = false;
@@ -1867,7 +1867,7 @@ PowerHist::setData(RideItem *_rideItem, bool force)
 
     if (ride && hasData) {
         //setTitle(ride->startTime().toString(GC_DATETIME_FORMAT));
-        setArraysFromRide(ride, standard, context->athlete->zones(rideItem->isRun), NULL);
+        setArraysFromRide(ride, standard, context->athlete->zones(rideItem->isRun), nullptr);
 
     } else {
 
@@ -2379,7 +2379,7 @@ PowerHist::setAxisTitle(int axis, QString label)
     // setup the default fonts
     QFont stGiles; // hoho - Chart Font St. Giles ... ok you have to be British to get this joke
     stGiles.fromString(appsettings->value(this, GC_FONT_CHARTLABELS, QFont().toString()).toString());
-    stGiles.setPointSize(appsettings->value(NULL, GC_FONT_CHARTLABELS_SIZE, 8).toInt());
+    stGiles.setPointSize(appsettings->value(nullptr, GC_FONT_CHARTLABELS_SIZE, 8).toInt());
 
     QwtText title(label);
     title.setFont(stGiles);

@@ -577,7 +577,8 @@ WkoParser::parseHeaderData(WKO_UCHAR *fb)
     notes = p; p += dotext(p, &txtbuf[0]); /* 5: notes */
 
     p += dotext(p, &txtbuf[0]); /* 6: graphs */
-    strcpy(reinterpret_cast<char *>(WKO_GRAPHS), reinterpret_cast<char *>(&txtbuf[0])); // save those graphs away
+    strncpy(reinterpret_cast<char *>(WKO_GRAPHS), reinterpret_cast<char *>(&txtbuf[0]), sizeof(WKO_GRAPHS) - 1); // save those graphs away
+    WKO_GRAPHS[sizeof(WKO_GRAPHS) - 1] = '\0';
 
     if (version != 1) { //!!! Version 1 beta support
         p += donumber(p, &sport); /* 7: sport */
