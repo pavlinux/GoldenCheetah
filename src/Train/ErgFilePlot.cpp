@@ -100,6 +100,7 @@ ErgFilePlot::ErgFilePlot(Context *context) : context(context)
     sd->setTickLength(QwtScaleDiv::MajorTick, 3);
     setAxisMaxMinor(yLeft, 0);
     //setAxisScaleDraw(QwtPlot::yLeft, sd);
+    delete sd;
 
     QPalette pal;
     pal.setColor(QPalette::WindowText, GColor(CRIDEPLOTYAXIS));
