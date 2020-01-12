@@ -1175,7 +1175,7 @@ ErgFile::wattsAt(long x, int &lapnum)
     // at this point in ime (i.e x=100 watts=100 followed
     // by x=100 watts=200)
     if (Points.at(leftPoint).x == Points.at(rightPoint).x)
-        return Points.at(rightPoint).val;
+        return Points.at(rightPoint).x;
 
     // so this point in time between two points and
     // we are ramping from one point and another
