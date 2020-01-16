@@ -100,6 +100,17 @@ class Card : public QGraphicsWidget
 
             // watch geom changes
             connect(this, SIGNAL(geometryChanged()), SLOT(geometryChanged()));
+
+	    parent = nullptr;
+	    barset = nullptr;
+	    barseries = nullptr;
+	    barcategoryaxis = nullptr;
+	    routeline = nullptr;
+	    lts = 0.0l, sts = 0.0l, stress = 0.0l, sb = 0.0l, rr = 0.0l;
+	    bubble = nullptr;
+	    up = false;
+	    showrange = false;
+	    incorner = false;
         }
 
         // watch mouse enter/leave
