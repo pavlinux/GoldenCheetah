@@ -487,6 +487,7 @@ int (*linsolver)(LM_REAL *A, LM_REAL *B, LM_REAL *x, int m)=NULL;
     work=(LM_REAL *)malloc(worksz*sizeof(LM_REAL)); /* allocate a big chunk in one step */
     if(!work){
       fprintf(stderr, LCAT(LEVMAR_BC_DER, "(): memory allocation request failed\n"));
+      free(sp_pDp);
       return LM_ERROR;
     }
     freework=1;
