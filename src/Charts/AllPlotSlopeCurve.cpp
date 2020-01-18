@@ -206,8 +206,8 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
     int i = 0;
     foreach (QPolygonF *p, polygons) {
 
-        double slope=0.0f; // slope of a section (byDistance = true)
-        double mperh=0.0f; // meter per hour (climb or descent) (byDistance = false)
+        double slope=0.0l; // slope of a section (byDistance = true)
+        double mperh=0.0l; // meter per hour (climb or descent) (byDistance = false)
         QPointF point1 = calcPoints.at(i);
         QPointF point2 = calcPoints.at(i+1);
 
