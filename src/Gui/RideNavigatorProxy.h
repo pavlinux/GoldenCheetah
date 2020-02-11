@@ -203,11 +203,14 @@ public:
         if (groupNo < 0) {
             return QModelIndex();
         } else {
-            QModelIndex *p = new QModelIndex(createIndex(groupNo, 0, (void*)NULL));
+            QModelIndex *p = new QModelIndex(createIndex(groupNo, 0, nullptr));
             if (sourceIndex.row() > 0 && sourceIndex.row() < sourceRowToGroupRow.size())
                 return createIndex(sourceRowToGroupRow[sourceIndex.row()], sourceIndex.column()+2, &p); // accommodate virtual columns
-            else
+            else {
+                delete p;
+                p = nullptr;
                 return QModelIndex();
+            }
         }
     }
 
