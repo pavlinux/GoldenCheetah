@@ -50,6 +50,8 @@ Season::Season()
     _id = QUuid::createUuid(); // in case it isn't set yet
     _seed = 0;
     _low = -50;
+    _days = -1;
+    _ramp = 60;
 }
 
 QString Season::getName() {
