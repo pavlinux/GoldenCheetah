@@ -1533,6 +1533,7 @@ void TrainSidebar::Disconnect()
 void TrainSidebar::guiUpdate()           // refreshes the telemetry
 {
     RealtimeData rtData;
+    rtData.setLapDistance(0);
     rtData.setLap(displayLap + displayWorkoutLap); // user laps + predefined workout lap
     rtData.mode = mode;
 
@@ -2760,7 +2761,7 @@ TrainSidebar::remoteControl(uint16_t command)
 }
 
 // HRV R-R data received
-void TrainSidebar::rrData(uint16_t  rrtime, uint8_t count, uint8_t bpm)
+void TrainSidebar::rrData(uint16_t  rrtime, uint8_t count __attribute__((unused)), uint8_t bpm)
 {
     if (status&RT_RECORDING && rrFile == NULL && recordFile != NULL) {
         QString rrfile = recordFile->fileName().replace("csv", "rr");

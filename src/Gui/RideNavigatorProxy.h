@@ -208,7 +208,6 @@ public:
                 return createIndex(sourceRowToGroupRow[sourceIndex.row()], sourceIndex.column()+2, &p); // accommodate virtual columns
             else {
                 delete p;
-                p = nullptr;
                 return QModelIndex();
             }
         }

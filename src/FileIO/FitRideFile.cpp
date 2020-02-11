@@ -3730,7 +3730,7 @@ void write_record(QByteArray *array, const RideFile *ride, bool withAlt, bool wi
 
         array->append(ridePoint->data(), ridePoint->size());
     }
-
+    delete local_msg_type_for_record_type;
 }
 
 QByteArray

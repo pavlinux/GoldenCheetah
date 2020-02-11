@@ -106,7 +106,7 @@ class RideFileInterval
 
                                                     // ADD NEW ONES HERE AND UPDATE last() below
 
-                           } types;
+                           };
 
         static enum intervaltype last() { return CLIMB; } // update to last above!
 

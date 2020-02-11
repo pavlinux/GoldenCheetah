@@ -1183,10 +1183,10 @@ RideItem::updateIntervals()
 
                 // With the 3 components model
                 // t = W'/(P − CP) + W'/(CP − Pmax)
-                double p = (integrated_series[i+t]-integrated_series[i])/t;
+                double p = static_cast<double>((integrated_series[i+t]-integrated_series[i])/t);
 
-                if (p>0.5*(PMAX-CP)+CP) {
-                    double tc = WPRIME / (p-CP) + WPRIME / ( CP - PMAX);
+                if (p > 0.5*(PMAX-CP) + CP) {
+                    double tc = static_cast<double>((WPRIME / (p-CP)) + (WPRIME / (CP-PMAX)));
 
                     if (tc >= (t*0.85f)) {
 

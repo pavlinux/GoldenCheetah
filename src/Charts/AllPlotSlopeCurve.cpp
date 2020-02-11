@@ -152,6 +152,7 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
     QPolygonF *polygon;
     QPointF *points = NULL;
     for (int i = from; i <= to; i++ ) {
+
         const QPointF sample = series->sample( i );
         if (i == from) {
             // first polygon
@@ -216,9 +217,9 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
             // if Y-Axis did not change, no calculation
             // distance - X-Axis is in KM, Y-Axis in m ! and at the end *100 to get %value
             if (point2.ry() != point1.ry()) {
-                slope = 100 * ((point2.ry() - point1.ry()) / ((point2.rx() - point1.rx())*1000));
+                slope = 100.0l * ((point2.ry() - point1.ry()) / ((point2.rx() - point1.rx())*1000.0l));
             } else {
-                slope = 0.0;
+                slope = 0.0l;
             }
             // set the brush
             if (slope >= 0 && slope < 5) brush = d_data->brushes[0];
@@ -235,9 +236,9 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
             // if Y-Axis did not change, no calculation
             // distance - X-Axis is in min, Y-Axis in m !
             if (point2.ry() != point1.ry()) {
-                mperh = 60 * ((point2.ry() - point1.ry()) / (point2.rx() - point1.rx()));
+                mperh = 60.0l * ((point2.ry() - point1.ry()) / (point2.rx() - point1.rx())/1.0l);
             } else {
-                mperh = 0.0;
+                mperh = 0.0l;
             }
             // set the brush
             if (mperh >= 0 && mperh < 100) brush = d_data->brushes[0];
