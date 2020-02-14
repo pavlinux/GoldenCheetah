@@ -698,13 +698,14 @@ int ezusb_load_ram_imagic(usb_dev_handle * device, const char *path,
 	status = parse_imagic(image, &ctx, ram_poke, device);
 	if (status < 0) {
 		printf("unable to download %s\n", path);
+		fclose(image);
 		return status;
 	}
 
 	if (verbose)
 		printf("... WROTE: %d bytes, %d segments, avg %d\n",
 		       ctx.total, ctx.count, ctx.total / ctx.count);
-
+	fclose(image);
 	return 0;
 }
 
