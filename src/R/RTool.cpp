@@ -334,6 +334,7 @@ fail:
 RTool::~RTool()
 {
 	delete R;
+	delete dev;
 }
 
 void
