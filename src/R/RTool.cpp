@@ -331,6 +331,11 @@ fail:
     starting = false;
 }
 
+RTool::~RTool()
+{
+	delete R;
+}
+
 void
 RTool::R_ProcessEvents()
 {

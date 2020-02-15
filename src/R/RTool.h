@@ -30,6 +30,7 @@ class RTool {
 
     public:
         RTool();
+        ~RTool();
         void  configChanged();
 
         REmbed *R;
