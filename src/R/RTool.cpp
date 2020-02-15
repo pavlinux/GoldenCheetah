@@ -69,6 +69,7 @@ RTool::RTool()
     canvas = NULL;
     chart = NULL;
     context = NULL;
+    cancelled = false;
 
     // if we bail we need to explain why, its in here
     QString dialogtext;
