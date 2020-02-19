@@ -29,11 +29,14 @@ INSTALL-LINUX   For building on Linux
 INSTALL-MAC     For building on Apple OS X
 
 
-Linux: [![Build Status](https://travis-ci.com/pavlinux/GoldenCheetah.svg?branch=master)](https://travis-ci.com/pavlinux/GoldenCheetah)
+Linux:
+[![Build Status](https://travis-ci.com/pavlinux/GoldenCheetah.svg?branch=master)](https://travis-ci.com/pavlinux/GoldenCheetah)
+
 [![Coverity Status](https://scan.coverity.com/projects/20068/badge.svg)](https://scan.coverity.com/projects/pavlinux-goldencheetah)
 
 ## Parent Builds
 Windows: [![Build status](https://ci.appveyor.com/api/projects/status/i6dwn4m8oyu52ihi?svg=true)](https://ci.appveyor.com/project/Joern-R/goldencheetah-knhd8)
+
 OSX: [![Build Status](https://travis-ci.org/GoldenCheetah/GoldenCheetah.svg?branch=master)](https://travis-ci.org/GoldenCheetah/GoldenCheetah)
 
 Alternatively, official builds are available from http://www.goldencheetah.org
