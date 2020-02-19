@@ -32,18 +32,18 @@ inline QwtIndPlotMarker::Matrix::~Matrix()
 
 QwtIndPlotMarker::Matrix::Matrix(const Matrix& m) {
 
-    if((m_rows!=m.rows())||(m_cols!=m.cols())) {
-        resize(m.rows(),m.cols());
+    if ((m_rows != m.rows()) || (m_cols!=m.cols())) {
+        resize(m.rows(), m.cols());
     }
 
-    for(unsigned long i=0;i<m.rows();i++){
+    for(unsigned long i=0; i < m.rows(); i++){
         for (unsigned long j = 0; j < m.cols(); j++) {
-        m_data[i*m_cols+j]=m(i,j);
+		m_data[(i * m_cols) + j] = m(i,j);
         }
     }
 }
 
-/* UNUSED
+/*
 QwtIndPlotMarker::Matrix& QwtIndPlotMarker::Matrix::operator=(const Matrix& m){
     if((m_rows!=m.rows())||(m_cols!=m.cols())) {
         resize(m.rows(),m.cols());
@@ -72,10 +72,9 @@ bool QwtIndPlotMarker::Matrix::operator() (unsigned long row, unsigned long col)
     return m_data[m_cols*row + col];
 }
 
-inline void QwtIndPlotMarker::Matrix::init() {
-    for (unsigned long i = 0; i < m_cols*m_rows; i++) {
-        m_data[i] = false;
-    }
+inline void QwtIndPlotMarker::Matrix::init()
+{
+	memset(m_data, false, m_cols * m_rows);
 }
 
 inline void QwtIndPlotMarker::Matrix::reset() {
@@ -85,13 +84,15 @@ inline void QwtIndPlotMarker::Matrix::reset() {
     m_cols = 0;
 }
 
-int QwtIndPlotMarker::Matrix::resize(unsigned long row, unsigned long col) {
+int QwtIndPlotMarker::Matrix::resize(unsigned long row, unsigned long col)
+{
     delete[] m_data;
 
     m_data = new bool[row * col]();
-    if(m_data) {
-        m_rows = row;
-        m_cols = col;
+    m_rows = row;
+    m_cols = col;
+
+    if (m_data) {
         init();
         return 0;
     }

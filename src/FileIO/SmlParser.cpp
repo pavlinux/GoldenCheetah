@@ -32,18 +32,18 @@
 
 SmlParser::SmlParser(RideFile* rideFile) : rideFile(rideFile)
 {
-    cad = 0;
-    speed = 0;
-    distance = 0;
-    lastDistance = 0;
-    lastTime = 0;
-    lastLength = 0;
-    lastLat = lastLon = 0;
-    watts = 0;
-    alt = 0;
-    lon = 0;
-    lat = 0;
-    hr = 0;
+    cad = 0.0l;
+    speed = 0.0l;
+    distance = 0.0l;
+    lastDistance = 0.0l;
+    lastTime = 0.0l;
+    lastLength = 0.0l;
+    lastLat = lastLon = 0.0l;
+    watts = 0.0l;
+    alt = 0.0l;
+    lon = 0.0l;
+    lat = 0.0l;
+    hr = 0.0l;
     temp = RideFile::NA;
     periodic = false;
     swimming = false;
@@ -147,23 +147,23 @@ SmlParser::endElement(const QString&, const QString&, const QString& qName)
     }
     else if (qName == "HR")
     {
-        hr = round(buffer.toDouble()*60.0); // HR comes per sec
+        hr = round(buffer.toDouble()*60.0l); // HR comes per sec
     }
     else if (qName == "Temperature")
     {
-        temp = buffer.toDouble()-273.0; // Temperature comes in Kelvin unit
+        temp = buffer.toDouble()-273.15l; // Temperature comes in Kelvin unit
     }
     else if (qName == "Cadence")
     {
-        cad = round(buffer.toDouble()*60.0); // Cadence comes in per sec
+        cad = round(buffer.toDouble()*60.0l); // Cadence comes in per sec
     }
     else if (qName == "Speed")
     {
-        speed = buffer.toDouble()*3.6; // Speed comes in m/s
+        speed = buffer.toDouble()*3.60l; // Speed comes in m/s
     }
     else if (qName == "Distance")
     {
-        distance = buffer.toDouble()/1000.0; // Distance comes in meters
+        distance = buffer.toDouble()/1000.0l; // Distance comes in meters
     }
     else if (qName == "BikePower")
     {
@@ -212,26 +212,26 @@ SmlParser::endElement(const QString&, const QString&, const QString& qName)
             double delta_t = time - lastTime;
             double delta_d = distance - lastDistance;
             if (delta_t > 0.0 && delta_d > 0.0)
-                speed = 3600.0 * delta_d / delta_t;
+                speed = 3600.0l * delta_d / delta_t;
         }
         if (distance == 0 && speed > 0)
         {
             // compute distance traveled since the last recorded sample
             double delta_t = time - lastTime;
             if (delta_t > 0.0)
-                distance = lastDistance + speed * delta_t / 3600.0;
+                distance = lastDistance + speed * delta_t / 3600.0l;
         }
         else if (distance == 0 && speed == 0)
         {
             // we need to figure out the distance by using the lon,lat
             // using the haversine formula
-            double r = 6371;
+            double r = 6371.0l;
             double dlat = toRadians(lat -lastLat);  // convert to radians
 
             double dlon = toRadians(lon - lastLon);
-            double a = sin(dlat /2) * sin(dlat/2) + cos(toRadians(lat)) *
-                       cos(toRadians(lastLat)) * sin(dlon/2) * sin(dlon /2);
-            double c = 4*atan2(sqrt(a),1+sqrt(1-fabs(a)));
+            double a = sin(dlat /2.0l) * sin(dlat/2.0l) + cos(toRadians(lat)) *
+                       cos(toRadians(lastLat)) * sin(dlon/2.0l) * sin(dlon /2.0l);
+            double c = 4.0l*atan2(sqrt(a),1.0l+sqrt(1.0l-fabs(a)));
             double delta_d = r * c;
             if(lastLat != 0)
                 distance = lastDistance + delta_d;
@@ -244,7 +244,7 @@ SmlParser::endElement(const QString&, const QString&, const QString& qName)
 
             // compute speed using distance traveled and elapsed time
             if (delta_t > 0.0)
-                speed = 3600.0 * delta_d / delta_t;
+                speed = 3600.0l * delta_d / delta_t;
         }
 
         // Record point on periodic samples only

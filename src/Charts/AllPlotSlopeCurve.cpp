@@ -147,13 +147,16 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
     double baseline = d_data->baseline;
     if ( yMap.transformation() )
         baseline = yMap.transformation()->bounded( baseline );
+
     double refY = yMap.transform( baseline );
-    double sectionStart = 0.0;
+    double sectionStart = 0.0l;
     QPolygonF *polygon;
     QPointF *points = NULL;
+
     for (int i = from; i <= to; i++ ) {
 
         const QPointF sample = series->sample( i );
+
         if (i == from) {
             // first polygon
             polygon = new QPolygonF (4);

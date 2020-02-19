@@ -70,8 +70,7 @@ class WheelSize
     public:
         const static QStringList RIM_SIZES;
         const static QStringList TIRE_SIZES;
-
-        static int         calcPerimeter(int rimSizeIndex, int tireSizeIndex);
+        static int  calcPerimeter(size_t rimSizeIndex, size_t tireSizeIndex);
 
 };
 

@@ -19,9 +19,9 @@ public:
     QwtPlotAxisData():
         isVisible( true ),
         doAutoScale( true ),
-        minValue( 0.0 ),
-        maxValue( 1000.0 ),
-        stepSize( 0.0 ),
+        minValue( 0.0l ),
+        maxValue( 1000.0l ),
+        stepSize( 0.0l ),
         maxMajor( 8 ),
         maxMinor( 5 ),
         isValid( false ),
@@ -34,13 +34,12 @@ public:
     {
         scaleWidget = new QwtScaleWidget( align, plot );
         scaleWidget->setObjectName( name ); 
-
 #if 1
         // better find the font sizes from the application font
         const QFont fscl( plot->fontInfo().family(), 10 );
         const QFont fttl( plot->fontInfo().family(), 12, QFont::Bold );
 #endif
-    
+
         scaleWidget->setTransformation( scaleEngine->transformation() );
 
         scaleWidget->setFont( fscl );

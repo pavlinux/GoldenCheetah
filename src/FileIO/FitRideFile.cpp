@@ -1320,9 +1320,11 @@ struct FitFileReaderState
                             p->number[2] = ((data32 >> 16) & 255);
                             p->number[3] = (data32 & 255);
                             gearsXdata->datapoints.append(p);
+                            delete p;
                             break;
                         default:
                             errors << QString("Unknown gear change event %1 type %2 data %3").arg(event).arg(event_type).arg(data32);
+                            delete p;
                             break;
                     }
                 }

@@ -20,6 +20,7 @@
 #include "Context.h"
 
 #ifndef _GC_RTool_h
+#define _GC_RTool_h
 
 class RGraphicsDevice;
 class RTool;
@@ -27,14 +28,14 @@ extern RTool *rtool;
 
 class RTool {
 
-
     public:
         RTool();
-        ~RTool();
+
         void  configChanged();
 
         REmbed *R;
         RGraphicsDevice *dev;
+        virtual ~RTool() {}
 
         // the canvas to plot on, it may be null
         // if no canvas is active
@@ -94,7 +95,6 @@ class RTool {
         static void cancel();
 
         QStringList messages;
-
 
     protected:
 

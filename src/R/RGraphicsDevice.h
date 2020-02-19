@@ -1,3 +1,5 @@
+#ifndef __RGraphicsDevice_H
+#define __RGraphicsDevice_H
 /*
  * Copyright (c) 2016 Mark Liversedge (liversedge@gmail.com)
  *
@@ -25,6 +27,7 @@
 //
 
 #include "REmbed.h"
+#include "RTool.h"
 
 #include <stdlib.h>
 #include <QDebug>
@@ -106,3 +109,4 @@ class RGraphicsDevice {
         // our graphics device
         pGEDevDesc gcGEDevDesc;
 };
+#endif

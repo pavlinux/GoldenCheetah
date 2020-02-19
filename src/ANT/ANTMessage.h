@@ -166,7 +166,9 @@ class ANTMessage {
         bool     fecSpeedIsVirtual;
 
         uint8_t  fecEqtType, fecCapabilities;
+#ifdef WITH_ANT_FEC_CAPABILITY
         bool     fecResistModeCapability, fecPowerModeCapability, fecSimulModeCapability;
+#endif
         uint16_t fecMaxResistance;
 
         // for details and equations see ANT+ Fitness Equipment Device Profile, Rev 4.1 p 66... "6.8  Control Data Pages"

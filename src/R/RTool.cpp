@@ -241,8 +241,10 @@ RTool::RTool()
         DllInfo *info = R_getEmbeddingDllInfo();
 
         // future proof, 3.4 or higher use new structure, 3.3 anything lower uses older structure
-        if (majorN > 3 || (majorN == 3 && minorN > 3)) R_registerRoutines(info, (const R_CMethodDef*)(cMethods34), callMethods, NULL, NULL);
-        else R_registerRoutines(info, (const R_CMethodDef*)(cMethods33), callMethods, NULL, NULL);
+	if (majorN > 3 || (majorN == 3 && minorN > 3))
+		R_registerRoutines(info, (const R_CMethodDef*)(cMethods34), callMethods, NULL, NULL);
+	else
+		R_registerRoutines(info, (const R_CMethodDef*)(cMethods33), callMethods, NULL, NULL);
 
         // what version are we running?
         #ifdef GC_WANT_ALLDEBUG
@@ -330,12 +332,13 @@ fail:
     }
     starting = false;
 }
-
+/*
 RTool::~RTool()
 {
-	delete R;
 	delete dev;
+	delete R;
 }
+*/
 
 void
 RTool::R_ProcessEvents()
