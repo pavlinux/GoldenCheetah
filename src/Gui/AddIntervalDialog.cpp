@@ -923,14 +923,14 @@ AddIntervalDialog::findPeaks(Context *context, bool typeTime, const RideFile *ri
                         name = name.arg("min");
                     } else {
                         double secs = windowSize;
-                        double mins = ((int) secs) / 60;
-                        secs = secs - mins * 60.0;
-                        double hrs = ((int) mins) / 60;
-                        mins = mins - hrs * 60.0;
+                        double mins = ((int) secs) / 60.0l;
+                        secs = secs - mins * 60.0l;
+                        double hrs = ((int) mins) / 60.0l;
+                        mins -= hrs * 60.0;
                         QString tm = "%1:%2:%3";
-                        tm = tm.arg(hrs, 0, 'f', 0);
-                        tm = tm.arg(mins, 2, 'f', 0, QLatin1Char('0'));
-                        tm = tm.arg(secs, 2, 'f', 0, QLatin1Char('0'));
+                        tm = tm.arg((double)(unsigned int)hrs, 0, 'f', 0);
+                        tm = tm.arg((double)(unsigned int)mins, 2, 'f', 0, QLatin1Char('0'));
+                        tm = tm.arg((double)(unsigned int)secs, 2, 'f', 0, QLatin1Char('0'));
 
                         // mins and secs
                         name = name.arg(tm);

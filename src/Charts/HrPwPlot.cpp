@@ -366,45 +366,42 @@ HrPwPlot::setYMax()
 void
 HrPwPlot::addWattStepCurve(QVector<double> &finalWatts, int nbpoints)
 {
+    #define MAX_POWER 500
+    #define NB_STEPS  MAX_POWER/10
     QMap<double,double> powerHist;
 
-    for (int h=0; h< nbpoints; ++h) {
+    for (int h=0; h < nbpoints; ++h) {
         if (powerHist.contains(finalWatts[h]))
-            powerHist[finalWatts[h]] += 1;
+            powerHist[finalWatts[h]]++;
         else
             powerHist[finalWatts[h]] = 1;
     }
-    int maxPower = 500;
-    double *array = new double[maxPower];
 
-    for (int i = 0; i < maxPower; ++i)
-        array[i] = 0.0;
-
+    double *array = new double[MAX_POWER]();
     QMapIterator<double,double> k(powerHist);
     while (k.hasNext()) {
         k.next();
         array[(int) round(k.key())] += k.value();
     }
 
-    int nbSteps = (int) ceil((maxPower - 1) / 10);
-    QVector<double> smoothWattsStep(nbSteps+1);
-    QVector<double> smoothTimeStep(nbSteps+1);
+    QVector<double> smoothWattsStep(NB_STEPS+1);
+    QVector<double> smoothTimeStep(NB_STEPS+1);
 
     int t;
-    for (t = 1; t < nbSteps; ++t) {
+    for (t = 1; t < NB_STEPS; ++t) {
         int low = t * 10;
         int high = low + 10;
 
         smoothWattsStep[t] = low;
         smoothTimeStep[t]  = minHr;
         while (low < high) {
-            smoothTimeStep[t] += array[low++]/ nbpoints * 300;
+            smoothTimeStep[t] += array[low++]/ nbpoints * 300.0l;
         }
     }
-    smoothTimeStep[t] = 0.0;
-    smoothWattsStep[t] = t * 10;
+    smoothTimeStep[t] = 0.0l;
+    smoothWattsStep[t] = t * 10.0l;
 
-    wattsStepCurve->setSamples(smoothWattsStep.data(), smoothTimeStep.data(), nbSteps+1);
+    wattsStepCurve->setSamples(smoothWattsStep.data(), smoothTimeStep.data(), NB_STEPS+1);
     delete [] array;
 }
 

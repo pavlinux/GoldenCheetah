@@ -1337,9 +1337,12 @@ RideItem::updateIntervals()
 
         // log of progress
         QFile log(context->athlete->home->logs().canonicalPath() + "/" + "climb.log");
+        QTextStream out(&log);
+        bool log_opened = false;
+
 	if (log.open(QIODevice::ReadWrite)) {
+		log_opened = true;
 		log.atEnd();
-		QTextStream out(&log);
 		//qDebug() << "SEARCH CLIMB STARTS: " << fileName;
 		out << "SEARCH CLIMB STARTS: " << fileName << "\r\n";
 		out << "START" << QDateTime::currentDateTime().toString() + "\r\n";
@@ -1410,10 +1413,10 @@ RideItem::updateIntervals()
 
                         if ((distance < 4.0 && height/distance >= 60-10*distance) ||
                             (distance >= 4.0 && height/distance >= 20)) {
-
-                            //qDebug() << "    NEW HILL " << (hills+1) << " at " << pstart->km  << "km " << pstart->secs/60.0 <<"-"<< pstop->secs/60.0 << "min " << distance << "km " << height/distance/10.0 << "%";
-                            out << "    NEW HILL " << (hills+1) << " at " << pstart->km << "km " << pstart->secs/60.0 <<"-"<< pstop->secs/60.0 << "min " << distance << "km " << height/distance/10.0 << "%\r\n";
-
+			    if (log_opened) {
+                        	//qDebug() << "    NEW HILL " << (hills+1) << " at " << pstart->km  << "km " << pstart->secs/60.0 <<"-"<< pstop->secs/60.0 << "min " << distance << "km " << height/distance/10.0 << "%";
+                        	out << "    NEW HILL " << (hills+1) << " at " << pstart->km << "km " << pstart->secs/60.0 <<"-"<< pstop->secs/60.0 << "min " << distance << "km " << height/distance/10.0 << "%\r\n";
+                            }
 
                             // create a new interval item
                             IntervalItem *intervalItem = new IntervalItem(this, QString(tr("Climb %1")).arg(++hills),
@@ -1427,7 +1430,7 @@ RideItem::updateIntervals()
                             intervalItem->rideInterval = NULL;
                             intervalItem->refresh();        // XXX will get called in constructore when refactor
                             intervals_ << intervalItem;
-                        } else {
+                        } else if (log_opened) {
                             out << "        NOT HILL " << "at " << pstart->km << "km " << pstart->secs/60.0 <<"-"<< pstop->secs/60.0 << "min " << distance << "km " << height/distance/10.0 << "%\r\n";
 
                             //qDebug() << "        NOT HILL " << "at " << pstart->km << "km " <<  pstart->secs/60.0 <<"-"<< pstop->secs/60.0 << "min " <<  distance  << "km" << height/distance/10.0 << "%";
@@ -1438,8 +1441,10 @@ RideItem::updateIntervals()
                 pstart = pstop;
             }
         }
-        out << "STOP" << QDateTime::currentDateTime().toString() + "\r\n";
-        log.close();
+        if (log_opened) {
+		out << "STOP" << QDateTime::currentDateTime().toString() + "\r\n";
+		log.close();
+        }
     }
 
 
