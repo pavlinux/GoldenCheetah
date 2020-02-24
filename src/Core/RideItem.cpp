@@ -1337,13 +1337,13 @@ RideItem::updateIntervals()
 
         // log of progress
         QFile log(context->athlete->home->logs().canonicalPath() + "/" + "climb.log");
-        log.open(QIODevice::ReadWrite);
-        log.atEnd();
-        QTextStream out(&log);
-
-        //qDebug() << "SEARCH CLIMB STARTS: " << fileName;
-        out << "SEARCH CLIMB STARTS: " << fileName << "\r\n";
-        out << "START" << QDateTime::currentDateTime().toString() + "\r\n";
+	if (log.open(QIODevice::ReadWrite)) {
+		log.atEnd();
+		QTextStream out(&log);
+		//qDebug() << "SEARCH CLIMB STARTS: " << fileName;
+		out << "SEARCH CLIMB STARTS: " << fileName << "\r\n";
+		out << "START" << QDateTime::currentDateTime().toString() + "\r\n";
+        }
 
         // Initialisation
         int hills = 0;
@@ -1369,11 +1369,8 @@ RideItem::updateIntervals()
             bool flat = (!downhill && (p->km - pstop->km)>1/3.0*(p->km - pstart->km));
             bool end = (p == f->dataPoints().last() );
 
-
-
             if (flat || downhill || end ) {
                 double distance =  pstop->km - pstart->km;
-
 
                 if (distance >= 0.5) {
                     // Candidat
