@@ -192,15 +192,15 @@ WheelSize::calcPerimeter(size_t rimSizeIndex, size_t tireSizeIndex)
 {
     // http://www.bikecalc.com/wheel_size_math
 
-    if ( rimSizeIndex >= 0
+    if ( rimSizeIndex > 0
 	 && rimSizeIndex  < sizeof(RIM_DIAMETERS)/sizeof(*RIM_DIAMETERS)
-	 && tireSizeIndex >= 0
+	 && tireSizeIndex > 0
 	 && tireSizeIndex < sizeof(TIRE_DIAMETERS)/sizeof(*TIRE_DIAMETERS)) {
 
         float rim = RIM_DIAMETERS[rimSizeIndex];
         float tire = TIRE_DIAMETERS[tireSizeIndex];
 
-        if (rim > 0 && tire > 0) {
+        if (rim > 0 && tire > 0 && tire > rim /* :) */) {
             return round(rim * PI + tire * PI);
         }
     }
