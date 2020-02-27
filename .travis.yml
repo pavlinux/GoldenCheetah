@@ -7,6 +7,7 @@ os:
 - linux
 dist: bionic
 language: c++
+cache: ccache
 env:
   global:
   - BRANCH=master
@@ -35,7 +36,7 @@ env:
         compiler: clang
       - os: linux
         compiler:
-    	    - clang
+	    - clang
 	    - gcc
 before_install:
 - travis/$TRAVIS_OS_NAME/before_install.sh
