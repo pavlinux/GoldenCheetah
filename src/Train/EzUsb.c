@@ -244,8 +244,8 @@ static inline int ezusb_get_eeprom_type(usb_dev_handle * device,
 int parse_ihex(FILE * image,
 	       void *context,
 	       int (*is_external)(unsigned short addr, size_t len),
-	       int (*poke)(void *context, unsigned short addr, int external,
-			   const unsigned char *data, size_t len)
+	       int(*poke)(void *context, unsigned short addr, int external,
+			  const unsigned char *data, size_t len)
     )
 {
 	unsigned char data[1023];

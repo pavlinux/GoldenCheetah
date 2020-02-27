@@ -179,7 +179,7 @@ LIBUSB_USE_V_1 = false # don't use on Windows
 # You *must* define VLC_INSTALL to use this feature.
 #VLC_INSTALL =
 #VLC_INCLUDE =
-VLC_LIBS = -lvlc
+#VLC_LIBS = -lvlc
 
 # *** Mac users NOTE ***
 # On MAC you don't need libvlc since we use the

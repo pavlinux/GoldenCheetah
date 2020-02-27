@@ -105,7 +105,6 @@ static bool fx2lp_is_external(uint32_t addr, size_t len)
 		return true;
 }
 
-
 /*****************************************************************************/
 
 /*
@@ -121,42 +120,54 @@ static bool fx2lp_is_external(uint32_t addr, size_t len)
 /*
  * Issues the specified vendor-specific write request.
  */
-static int ezusb_write(libusb_device_handle *device, const char *label,
-	uint8_t opcode, uint32_t addr, const unsigned char *data, size_t len)
+static int ezusb_write(libusb_device_handle * device, const char *label,
+		       uint8_t opcode, uint32_t addr, const unsigned char *data,
+		       size_t len)
 {
 	int status;
 
 	if (verbose > 1)
-		printf("%s, addr 0x%08x len %4u (0x%04x)\n", label, addr, (unsigned)len, (unsigned)len);
-	status = libusb_control_transfer(device,
-		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-		opcode, addr & 0xFFFF, addr >> 16,
-		(unsigned char*)data, (uint16_t)len, 1000);
-    if (status < 0)
-        printf("%s: %s\n", label, libusb_error_name(status));
-    else if ((unsigned)status != len)
-        printf("%s ==> %d\n", label, status);
+		printf("%s, addr 0x%08x len %4u (0x%04x)\n", label, addr,
+		       (unsigned)len, (unsigned)len);
+	status =
+	    libusb_control_transfer(device,
+				    LIBUSB_ENDPOINT_OUT |
+				    LIBUSB_REQUEST_TYPE_VENDOR |
+				    LIBUSB_RECIPIENT_DEVICE, opcode,
+				    addr & 0xFFFF, addr >> 16,
+				    (unsigned char *)data, (uint16_t) len,
+				    1000);
+	if (status < 0)
+		printf("%s: %s\n", label, libusb_error_name(status));
+	else if ((unsigned)status != len)
+		printf("%s ==> %d\n", label, status);
 	return (status < 0) ? -EIO : 0;
 }
 
 /*
  * Issues the specified vendor-specific read request.
  */
-static int ezusb_read(libusb_device_handle *device, const char *label,
-	uint8_t opcode, uint32_t addr, const unsigned char *data, size_t len)
+static int ezusb_read(libusb_device_handle * device, const char *label,
+		      uint8_t opcode, uint32_t addr, const unsigned char *data,
+		      size_t len)
 {
 	int status;
 
 	if (verbose > 1)
-		printf("%s, addr 0x%08x len %4u (0x%04x)\n", label, addr, (unsigned)len, (unsigned)len);
-	status = libusb_control_transfer(device,
-		LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-		opcode, addr & 0xFFFF, addr >> 16,
-		(unsigned char*)data, (uint16_t)len, 1000);
-    if (status < 0)
-        printf("%s: %s\n", label, libusb_error_name(status));
-    else if ((unsigned)status != len)
-        printf("%s ==> %d\n", label, status);
+		printf("%s, addr 0x%08x len %4u (0x%04x)\n", label, addr,
+		       (unsigned)len, (unsigned)len);
+	status =
+	    libusb_control_transfer(device,
+				    LIBUSB_ENDPOINT_IN |
+				    LIBUSB_REQUEST_TYPE_VENDOR |
+				    LIBUSB_RECIPIENT_DEVICE, opcode,
+				    addr & 0xFFFF, addr >> 16,
+				    (unsigned char *)data, (uint16_t) len,
+				    1000);
+	if (status < 0)
+		printf("%s: %s\n", label, libusb_error_name(status));
+	else if ((unsigned)status != len)
+		printf("%s ==> %d\n", label, status);
 	return (status < 0) ? -EIO : 0;
 }
 
@@ -164,7 +175,8 @@ static int ezusb_read(libusb_device_handle *device, const char *label,
  * Modifies the CPUCS register to stop or reset the CPU.
  * Returns false on error.
  */
-static bool ezusb_cpucs(libusb_device_handle *device, uint32_t addr, bool doRun)
+static bool ezusb_cpucs(libusb_device_handle * device, uint32_t addr,
+			bool doRun)
 {
 	int status;
 	uint8_t data = doRun ? 0x00 : 0x01;
@@ -172,13 +184,14 @@ static bool ezusb_cpucs(libusb_device_handle *device, uint32_t addr, bool doRun)
 	if (verbose)
 		printf("%s\n", data ? "stop CPU" : "reset CPU");
 	status = libusb_control_transfer(device,
-		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-		RW_INTERNAL, addr & 0xFFFF, addr >> 16,
-		&data, 1, 1000);
+					 LIBUSB_ENDPOINT_OUT |
+					 LIBUSB_REQUEST_TYPE_VENDOR |
+					 LIBUSB_RECIPIENT_DEVICE, RW_INTERNAL,
+					 addr & 0xFFFF, addr >> 16, &data, 1,
+					 1000);
 	if ((status != 1) &&
-		/* We may get an I/O error from libusb as the device disappears */
-		((!doRun) || (status != LIBUSB_ERROR_IO)))
-	{
+	    /* We may get an I/O error from libusb as the device disappears */
+	    ((!doRun) || (status != LIBUSB_ERROR_IO))) {
 		const char *mesg = "can't modify CPUCS";
 		if (status < 0)
 			printf("%s: %s\n", mesg, libusb_error_name(status));
@@ -193,19 +206,20 @@ static bool ezusb_cpucs(libusb_device_handle *device, uint32_t addr, bool doRun)
  * Send an FX3 jumpt to address command
  * Returns false on error.
  */
-static bool ezusb_fx3_jump(libusb_device_handle *device, uint32_t addr)
+static bool ezusb_fx3_jump(libusb_device_handle * device, uint32_t addr)
 {
 	int status;
 
 	if (verbose)
 		printf("transfer execution to Program Entry at 0x%08x\n", addr);
 	status = libusb_control_transfer(device,
-		LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-		RW_INTERNAL, addr & 0xFFFF, addr >> 16,
-		NULL, 0, 1000);
+					 LIBUSB_ENDPOINT_OUT |
+					 LIBUSB_REQUEST_TYPE_VENDOR |
+					 LIBUSB_RECIPIENT_DEVICE, RW_INTERNAL,
+					 addr & 0xFFFF, addr >> 16, NULL, 0,
+					 1000);
 	/* We may get an I/O error from libusb as the device disappears */
-	if ((status != 0) && (status != LIBUSB_ERROR_IO))
-	{
+	if ((status != 0) && (status != LIBUSB_ERROR_IO)) {
 		const char *mesg = "failed to send jump command";
 		if (status < 0)
 			printf("%s: %s\n", mesg, libusb_error_name(status));
@@ -234,10 +248,10 @@ static bool ezusb_fx3_jump(libusb_device_handle *device, uint32_t addr)
  * Caller is responsible for halting CPU as needed, such as when
  * overwriting a second stage loader.
  */
-static int parse_ihex(FILE *image, void *context,
-	bool (*is_external)(uint32_t addr, size_t len),
-	int (*poke) (void *context, uint32_t addr, bool external,
-	const unsigned char *data, size_t len))
+static int parse_ihex(FILE * image, void *context,
+		      bool (*is_external)(uint32_t addr, size_t len),
+		      int(*poke)(void *context, uint32_t addr, bool external,
+				 const unsigned char *data, size_t len))
 {
 	unsigned char data[1023];
 	uint32_t data_addr = 0;
@@ -288,13 +302,13 @@ static int parse_ihex(FILE *image, void *context,
 		/* Read the length field (up to 16 bytes) */
 		tmp = buf[3];
 		buf[3] = 0;
-		len = strtoul(buf+1, NULL, 16);
+		len = strtoul(buf + 1, NULL, 16);
 		buf[3] = tmp;
 
 		/* Read the target offset (address up to 64KB) */
 		tmp = buf[7];
 		buf[7] = 0;
-		off = (int)strtoul(buf+3, NULL, 16);
+		off = (int)strtoul(buf + 3, NULL, 16);
 		buf[7] = tmp;
 
 		/* Initialize data_addr */
@@ -306,7 +320,7 @@ static int parse_ihex(FILE *image, void *context,
 		/* Read the record type */
 		tmp = buf[9];
 		buf[9] = 0;
-		type = (char)strtoul(buf+7, NULL, 16);
+		type = (char)strtoul(buf + 7, NULL, 16);
 		buf[9] = tmp;
 
 		/* If this is an EOF record, then make it so. */
@@ -331,31 +345,29 @@ static int parse_ihex(FILE *image, void *context,
 		 * memory so it's not really contiguous */
 
 		/* flush the saved data if it's not contiguous,
-		* or when we've buffered as much as we can.
-		*/
-		if (data_len != 0
-			&& (off != (data_addr + data_len)
-			/* || !merge */
-			|| (data_len + len) > sizeof(data))) {
-				if (is_external)
-					external = is_external(data_addr, data_len);
-				rc = poke(context, data_addr, external, data, data_len);
-				if (rc < 0)
-					return -1;
-				data_addr = off;
-				data_len = 0;
+		 * or when we've buffered as much as we can.
+		 */
+		if (data_len != 0 && (off != (data_addr + data_len)
+				      /* || !merge */
+				      || (data_len + len) > sizeof(data))) {
+			if (is_external)
+				external = is_external(data_addr, data_len);
+			rc = poke(context, data_addr, external, data, data_len);
+			if (rc < 0)
+				return -1;
+			data_addr = off;
+			data_len = 0;
 		}
 
 		/* append to saved data, flush later */
-		for (idx = 0, cp = buf+9 ;  idx < len ;  idx += 1, cp += 2) {
+		for (idx = 0, cp = buf + 9; idx < len; idx += 1, cp += 2) {
 			tmp = cp[2];
 			cp[2] = 0;
-			data[data_len + idx] = (uint8_t)strtoul(cp, NULL, 16);
+			data[data_len + idx] = (uint8_t) strtoul(cp, NULL, 16);
 			cp[2] = tmp;
 		}
 		data_len += len;
 	}
-
 
 	/* flush any data remaining */
 	if (data_len != 0) {
@@ -383,9 +395,10 @@ static int parse_ihex(FILE *image, void *context,
  * Caller is responsible for halting CPU as needed, such as when
  * overwriting a second stage loader.
  */
-static int parse_bin(FILE *image, void *context,
-	bool (*is_external)(uint32_t addr, size_t len), int (*poke)(void *context,
-	uint32_t addr, bool external, const unsigned char *data, size_t len))
+static int parse_bin(FILE * image, void *context,
+		     bool (*is_external)(uint32_t addr, size_t len),
+		     int(*poke)(void *context, uint32_t addr, bool external,
+				const unsigned char *data, size_t len))
 {
 	unsigned char data[4096];
 	uint32_t data_addr = 0;
@@ -402,9 +415,9 @@ static int parse_bin(FILE *image, void *context,
 		rc = poke(context, data_addr, external, data, data_len);
 		if (rc < 0)
 			return -1;
-		data_addr += (uint32_t)data_len;
+		data_addr += (uint32_t) data_len;
 	}
-	return feof(image)?0:-1;
+	return feof(image) ? 0 : -1;
 }
 
 /*
@@ -421,9 +434,10 @@ static int parse_bin(FILE *image, void *context,
  * Caller is responsible for halting CPU as needed, such as when
  * overwriting a second stage loader.
  */
-static int parse_iic(FILE *image, void *context,
-	bool (*is_external)(uint32_t addr, size_t len),
-	int (*poke)(void *context, uint32_t addr, bool external, const unsigned char *data, size_t len))
+static int parse_iic(FILE * image, void *context,
+		     bool (*is_external)(uint32_t addr, size_t len),
+		     int(*poke)(void *context, uint32_t addr, bool external,
+				const unsigned char *data, size_t len))
 {
 	unsigned char data[4096];
 	uint32_t data_addr = 0;
@@ -454,7 +468,8 @@ static int parse_iic(FILE *image, void *context,
 		data_addr = (block_header[2] << 8) + block_header[3];
 		if (data_len > sizeof(data)) {
 			/* If this is ever reported as an error, switch to using malloc/realloc */
-			printf("IIC data block too small - please report this error to libusb.info\n");
+			printf
+			    ("IIC data block too small - please report this error to libusb.info\n");
 			return -1;
 		}
 		read_len = fread(data, 1, data_len, image);
@@ -471,8 +486,6 @@ static int parse_iic(FILE *image, void *context,
 	return 0;
 }
 
-
-
 /*
  * Scan an Imagic.sys driver file and invoke the poke() function on the
  * various segments of firmware to be loaded
@@ -484,98 +497,108 @@ static int parse_iic(FILE *image, void *context,
  *	     	  by returning negative values.
  *
  */
-int parse_imagic (
-    FILE	*image,
-    void	*context,
-    int 	(*poke) (void *context, unsigned short addr, int external,
-              const unsigned char *data, size_t len),
-    libusb_device_handle *device
-)
+int parse_imagic(FILE * image,
+		 void *context,
+		 int (*poke)(void *context, unsigned short addr, int external,
+			     const unsigned char *data, size_t len),
+		 libusb_device_handle * device)
 {
-    unsigned short cpucs_addr = 0x7f92;
-    long block1_offset = 0x3bb0;
-    long block2_offset = 0x2420;
-    long expected_filesize = 26356;
-    int	 rc;
+	unsigned short cpucs_addr = 0x7f92;
+	long block1_offset = 0x3bb0;
+	long block2_offset = 0x2420;
+	long expected_filesize = 26356;
+	int rc;
 
-    struct imagic_firmware_array_element {
-        unsigned short length;
-        unsigned short load_addr;
-        unsigned char  flag1;
-        unsigned char  data[16];
-        unsigned char  flag2;
+	struct imagic_firmware_array_element {
+		unsigned short length;
+		unsigned short load_addr;
+		unsigned char flag1;
+		unsigned char data[16];
+		unsigned char flag2;
 
-    } imagic_firmware_element;
+	} imagic_firmware_element;
 
-    // First check that the file is the size we expect
-    rc = fseek(image, 0, SEEK_END);
-    if (rc != 0 || ftell(image) != expected_filesize) {
-        printf("Unexpected format for imagic driver file\n");
-        return -2;
-    }
+	// First check that the file is the size we expect
+	rc = fseek(image, 0, SEEK_END);
+	if (rc != 0 || ftell(image) != expected_filesize) {
+		printf("Unexpected format for imagic driver file\n");
+		return -2;
+	}
 
-    /* don't let CPU run while we overwrite its code/data */
-    if (!ezusb_cpucs (device, cpucs_addr, 0))
-        return -1;
+	/* don't let CPU run while we overwrite its code/data */
+	if (!ezusb_cpucs(device, cpucs_addr, 0))
+		return -1;
 
-    // Seek to first firmware block
-    rc = fseek(image, block1_offset, SEEK_SET);
-    if (rc != 0) {
-        printf("Error locating firmware array 1 in imagic driver file\n");
-        return -2;
-    }
+	// Seek to first firmware block
+	rc = fseek(image, block1_offset, SEEK_SET);
+	if (rc != 0) {
+		printf
+		    ("Error locating firmware array 1 in imagic driver file\n");
+		return -2;
+	}
 
-    while (1) {
-        rc = fread(&imagic_firmware_element, 1, sizeof(imagic_firmware_element), image);
-        if (rc != sizeof(imagic_firmware_element)) {
-            printf("Error reading imagic driver file\n");
-            return -2;
-        }
-        if (imagic_firmware_element.length <= 0)
-            break;
+	while (1) {
+		rc = fread(&imagic_firmware_element, 1,
+			   sizeof(imagic_firmware_element), image);
+		if (rc != sizeof(imagic_firmware_element)) {
+			printf("Error reading imagic driver file\n");
+			return -2;
+		}
+		if (imagic_firmware_element.length <= 0)
+			break;
 
-        rc = poke (context, imagic_firmware_element.load_addr, 0, imagic_firmware_element.data, imagic_firmware_element.length);
-        if (rc < 0)
-            return -1;
-    }
+		rc = poke(context, imagic_firmware_element.load_addr, 0,
+			  imagic_firmware_element.data,
+			  imagic_firmware_element.length);
+		if (rc < 0)
+			return -1;
+	}
 
-    /* Enable / disable CPU */
-    if (!ezusb_cpucs (device, cpucs_addr, 1))
-        return -1;
-    if (!ezusb_cpucs (device, cpucs_addr, 0))
-        return -1;
+	/* Enable / disable CPU */
+	if (!ezusb_cpucs(device, cpucs_addr, 1))
+		return -1;
+	if (!ezusb_cpucs(device, cpucs_addr, 0))
+		return -1;
 
-    // Seek to second firmware block
-    rc = fseek(image, block2_offset, SEEK_SET);
-    if (rc != 0) {
-        printf("Error locating firmware array 2 in imagic driver file\n");
-        return -2;
-    }
-    while (1) {
-        rc = fread(&imagic_firmware_element, 1, sizeof(imagic_firmware_element), image);
-        if (rc != sizeof(imagic_firmware_element)) {
-            printf("Error reading imagic driver file\n");
-            return -2;
-        }
-        if (imagic_firmware_element.length <= 0)
-            break;
+	// Seek to second firmware block
+	rc = fseek(image, block2_offset, SEEK_SET);
+	if (rc != 0) {
+		printf
+		    ("Error locating firmware array 2 in imagic driver file\n");
+		return -2;
+	}
+	while (1) {
+		rc = fread(&imagic_firmware_element, 1,
+			   sizeof(imagic_firmware_element), image);
+		if (rc != sizeof(imagic_firmware_element)) {
+			printf("Error reading imagic driver file\n");
+			return -2;
+		}
+		if (imagic_firmware_element.length <= 0)
+			break;
 
-        rc = poke (context, imagic_firmware_element.load_addr, 0, imagic_firmware_element.data, imagic_firmware_element.length);
-        if (rc < 0)
-            return -1;
-    }
+		rc = poke(context, imagic_firmware_element.load_addr, 0,
+			  imagic_firmware_element.data,
+			  imagic_firmware_element.length);
+		if (rc < 0)
+			return -1;
+	}
 
-    /* Enable  CPU */
-    if (!ezusb_cpucs (device, cpucs_addr, 1))
-        return -1;
+	/* Enable  CPU */
+	if (!ezusb_cpucs(device, cpucs_addr, 1))
+		return -1;
 
-    return 0;
+	return 0;
 }
 
 /* the parse call will be selected according to the image type */
-static int (*parse[IMG_TYPE_MAX])(FILE *image, void *context, bool (*is_external)(uint32_t addr, size_t len),
-           int (*poke)(void *context, uint32_t addr, bool external, const unsigned char *data, size_t len))
-           = { parse_ihex, parse_iic, parse_bin };
+static int (*parse[IMG_TYPE_MAX])(FILE * image, void *context,
+				  bool(*is_external)(uint32_t addr, size_t len),
+				  int(*poke)(void *context, uint32_t addr,
+					     bool external,
+					     const unsigned char *data,
+					     size_t len))
+= { parse_ihex, parse_iic, parse_bin };
 
 /*****************************************************************************/
 
@@ -599,34 +622,36 @@ struct ram_poke_context {
 #define RETRY_LIMIT 5
 
 static int ram_poke(void *context, uint32_t addr, bool external,
-	const unsigned char *data, size_t len)
+		    const unsigned char *data, size_t len)
 {
-	struct ram_poke_context *ctx = (struct ram_poke_context*)context;
+	struct ram_poke_context *ctx = (struct ram_poke_context *)context;
 	int rc;
 	unsigned retry = 0;
 
 	switch (ctx->mode) {
-	case internal_only:		/* CPU should be stopped */
+	case internal_only:	/* CPU should be stopped */
 		if (external) {
-			printf("can't write %u bytes external memory at 0x%08x\n",
-				(unsigned)len, addr);
+			printf
+			    ("can't write %u bytes external memory at 0x%08x\n",
+			     (unsigned)len, addr);
 			return -EINVAL;
 		}
 		break;
-	case skip_internal:		/* CPU must be running */
+	case skip_internal:	/* CPU must be running */
 		if (!external) {
 			if (verbose >= 2) {
 				printf("SKIP on-chip RAM, %u bytes at 0x%08x\n",
-					(unsigned)len, addr);
+				       (unsigned)len, addr);
 			}
 			return 0;
 		}
 		break;
-	case skip_external:		/* CPU should be stopped */
+	case skip_external:	/* CPU should be stopped */
 		if (external) {
 			if (verbose >= 2) {
-				printf("SKIP external RAM, %u bytes at 0x%08x\n",
-					(unsigned)len, addr);
+				printf
+				    ("SKIP external RAM, %u bytes at 0x%08x\n",
+				     (unsigned)len, addr);
 			}
 			return 0;
 		}
@@ -644,10 +669,9 @@ static int ram_poke(void *context, uint32_t addr, bool external,
 	 * NAKed (just dropped) so time out means is a real problem.
 	 */
 	while ((rc = ezusb_write(ctx->device,
-		external ? "write external" : "write on-chip",
-		external ? RW_MEMORY : RW_INTERNAL,
-		addr, data, len)) < 0
-		&& retry < RETRY_LIMIT) {
+				 external ? "write external" : "write on-chip",
+				 external ? RW_MEMORY : RW_INTERNAL,
+				 addr, data, len)) < 0 && retry < RETRY_LIMIT) {
 		if (rc != LIBUSB_ERROR_TIMEOUT)
 			break;
 		retry += 1;
@@ -659,10 +683,10 @@ static int ram_poke(void *context, uint32_t addr, bool external,
  * Load a Cypress Image file into target RAM.
  * See http://www.cypress.com/?docID=41351 (AN76405 PDF) for more info.
  */
-static int fx3_load_ram(libusb_device_handle *device, const char *path)
+static int fx3_load_ram(libusb_device_handle * device, const char *path)
 {
 	uint32_t dCheckSum, dExpectedCheckSum, dAddress, i, dLen, dLength;
-	uint32_t* dImageBuf;
+	uint32_t *dImageBuf;
 	unsigned char *bBuf, hBuf[4], blBuf[4], rBuf[4096];
 	FILE *image;
 	int ret = 0;
@@ -689,10 +713,11 @@ static int fx3_load_ram(libusb_device_handle *device, const char *path)
 	}
 
 	// Check bImageType
-	switch(hBuf[3]) {
+	switch (hBuf[3]) {
 	case 0xB0:
 		if (verbose)
-			printf("normal FW binary %s image with checksum\n", (hBuf[2]&0x01)?"data":"executable");
+			printf("normal FW binary %s image with checksum\n",
+			       (hBuf[2] & 0x01) ? "data" : "executable");
 		break;
 	case 0xB1:
 		printf("security binary image is not currently supported\n");
@@ -710,29 +735,32 @@ static int fx3_load_ram(libusb_device_handle *device, const char *path)
 
 	// Read the bootloader version
 	if (verbose) {
-		if ((ezusb_read(device, "read bootloader version", RW_INTERNAL, 0xFFFF0020, blBuf, 4) < 0)) {
+		if ((ezusb_read
+		     (device, "read bootloader version", RW_INTERNAL,
+		      0xFFFF0020, blBuf, 4) < 0)) {
 			printf("Could not read bootloader version\n");
 			ret = -8;
 			goto exit;
 		}
-		printf("FX3 bootloader version: 0x%02X%02X%02X%02X\n", blBuf[3], blBuf[2], blBuf[1], blBuf[0]);
+		printf("FX3 bootloader version: 0x%02X%02X%02X%02X\n", blBuf[3],
+		       blBuf[2], blBuf[1], blBuf[0]);
 	}
 
 	dCheckSum = 0;
 	if (verbose)
 		printf("writing image...\n");
 	while (1) {
-		if ((fread(&dLength, sizeof(uint32_t), 1, image) != 1) ||  // read dLength
-			(fread(&dAddress, sizeof(uint32_t), 1, image) != 1)) { // read dAddress
+		if ((fread(&dLength, sizeof(uint32_t), 1, image) != 1) ||	// read dLength
+		    (fread(&dAddress, sizeof(uint32_t), 1, image) != 1)) {	// read dAddress
 			printf("could not read image");
 			ret = -3;
 			goto exit;
 		}
 		if (dLength == 0)
-			break; // done
+			break;	// done
 
 		// coverity[tainted_data]
-		dImageBuf = (uint32_t*)calloc(dLength, sizeof(uint32_t));
+		dImageBuf = (uint32_t *) calloc(dLength, sizeof(uint32_t));
 		if (dImageBuf == NULL) {
 			printf("could not allocate buffer for image chunk\n");
 			ret = -4;
@@ -740,7 +768,8 @@ static int fx3_load_ram(libusb_device_handle *device, const char *path)
 		}
 
 		// read sections
-		if (fread(dImageBuf, sizeof(uint32_t), dLength, image) != dLength) {
+		if (fread(dImageBuf, sizeof(uint32_t), dLength, image) !=
+		    dLength) {
 			printf("could not read image");
 			free(dImageBuf);
 			ret = -3;
@@ -748,15 +777,20 @@ static int fx3_load_ram(libusb_device_handle *device, const char *path)
 		}
 		for (i = 0; i < dLength; i++)
 			dCheckSum += dImageBuf[i];
-		dLength <<= 2; // convert to Byte length
-		bBuf = (unsigned char*) dImageBuf;
+		dLength <<= 2;	// convert to Byte length
+		bBuf = (unsigned char *)dImageBuf;
 
 		while (dLength > 0) {
-			dLen = 4096; // 4K max
+			dLen = 4096;	// 4K max
 			if (dLen > dLength)
 				dLen = dLength;
-			if ((ezusb_write(device, "write firmware", RW_INTERNAL, dAddress, bBuf, dLen) < 0) ||
-				(ezusb_read(device, "read firmware", RW_INTERNAL, dAddress, rBuf, dLen) < 0)) {
+			if ((ezusb_write
+			     (device, "write firmware", RW_INTERNAL, dAddress,
+			      bBuf, dLen) < 0)
+			    ||
+			    (ezusb_read
+			     (device, "read firmware", RW_INTERNAL, dAddress,
+			      rBuf, dLen) < 0)) {
 				printf("R/W error\n");
 				free(dImageBuf);
 				ret = -5;
@@ -781,7 +815,7 @@ static int fx3_load_ram(libusb_device_handle *device, const char *path)
 
 	// read pre-computed checksum data
 	if ((fread(&dExpectedCheckSum, sizeof(uint32_t), 1, image) != 1) ||
-		(dCheckSum != dExpectedCheckSum)) {
+	    (dCheckSum != dExpectedCheckSum)) {
 		printf("checksum error\n");
 		ret = -7;
 		goto exit;
@@ -792,7 +826,7 @@ static int fx3_load_ram(libusb_device_handle *device, const char *path)
 		ret = -6;
 	}
 
-exit:
+ exit:
 	fclose(image);
 	return ret;
 }
@@ -811,7 +845,9 @@ exit:
  * memory is written, expecting a second stage loader to have already
  * been loaded.  Then file is re-parsed and on-chip memory is written.
  */
-int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_type, int img_type, int stage, Prototype_EzUsb_control_msg uptr)
+int libezusb_load_ram(libusb_device_handle * device, const char *path,
+		      int fx_type, int img_type, int stage,
+		      Prototype_EzUsb_control_msg uptr)
 {
 	FILE *image;
 	uint32_t cpucs_addr;
@@ -821,8 +857,8 @@ int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_typ
 	uint8_t iic_header[8] = { 0 };
 	int ret = 0;
 
-    //Load the runtime library reference
-    ezusb_usb_control_msg = uptr;
+	//Load the runtime library reference
+	ezusb_usb_control_msg = uptr;
 
 	if (fx_type == FX_TYPE_FX3)
 		return fx3_load_ram(device, path);
@@ -835,18 +871,21 @@ int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_typ
 		printf("open firmware image %s for RAM upload\n", path);
 
 	if (img_type == IMG_TYPE_IIC) {
-		if ( (fread(iic_header, 1, sizeof(iic_header), image) != sizeof(iic_header))
-		  || (((fx_type == FX_TYPE_FX2LP) || (fx_type == FX_TYPE_FX2)) && (iic_header[0] != 0xC2))
-		  || ((fx_type == FX_TYPE_AN21) && (iic_header[0] != 0xB2))
-		  || ((fx_type == FX_TYPE_FX1) && (iic_header[0] != 0xB6)) ) {
-			printf("IIC image does not contain executable code - cannot load to RAM.\n");
+		if ((fread(iic_header, 1, sizeof(iic_header), image) !=
+		     sizeof(iic_header))
+		    || (((fx_type == FX_TYPE_FX2LP) || (fx_type == FX_TYPE_FX2))
+			&& (iic_header[0] != 0xC2))
+		    || ((fx_type == FX_TYPE_AN21) && (iic_header[0] != 0xB2))
+		    || ((fx_type == FX_TYPE_FX1) && (iic_header[0] != 0xB6))) {
+			printf
+			    ("IIC image does not contain executable code - cannot load to RAM.\n");
 			ret = -1;
 			goto exit;
 		}
 	}
 
 	/* EZ-USB original/FX and FX2 devices differ, apart from the 8051 core */
-	switch(fx_type) {
+	switch (fx_type) {
 	case FX_TYPE_FX2LP:
 		cpucs_addr = 0xe600;
 		is_external = fx2lp_is_external;
@@ -866,8 +905,7 @@ int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_typ
 		ctx.mode = internal_only;
 
 		/* if required, halt the CPU while we overwrite its code/data */
-		if (cpucs_addr && !ezusb_cpucs(device, cpucs_addr, false))
-		{
+		if (cpucs_addr && !ezusb_cpucs(device, cpucs_addr, false)) {
 			ret = -1;
 			goto exit;
 		}
@@ -884,7 +922,7 @@ int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_typ
 	/* scan the image, first (maybe only) time */
 	ctx.device = device;
 	ctx.total = ctx.count = 0;
-	status = parse[img_type](image, &ctx, is_external, ram_poke);
+	status = parse[img_type] (image, &ctx, is_external, ram_poke);
 	if (status < 0) {
 		printf("unable to upload %s\n", path);
 		ret = status;
@@ -897,8 +935,7 @@ int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_typ
 		ctx.mode = skip_external;
 
 		/* if needed, halt the CPU while we overwrite the 1st stage loader */
-		if (cpucs_addr && !ezusb_cpucs(device, cpucs_addr, false))
-		{
+		if (cpucs_addr && !ezusb_cpucs(device, cpucs_addr, false)) {
 			ret = -1;
 			goto exit;
 		}
@@ -917,14 +954,15 @@ int libezusb_load_ram(libusb_device_handle *device, const char *path, int fx_typ
 
 	if (verbose && (ctx.count != 0)) {
 		printf("... WROTE: %d bytes, %d segments, avg %d\n",
-			(int)ctx.total, (int)ctx.count, (int)(ctx.total/ctx.count));
+		       (int)ctx.total, (int)ctx.count,
+		       (int)(ctx.total / ctx.count));
 	}
 
 	/* if required, reset the CPU so it runs what we just uploaded */
 	if (cpucs_addr && !ezusb_cpucs(device, cpucs_addr, true))
 		ret = -1;
 
-exit:
+ exit:
 	fclose(image);
 	return ret;
 }
@@ -937,37 +975,38 @@ exit:
  * Unlike some later fortius devices, that imagic has only
  * internal memory
  */
-int libezusb_load_ram_imagic (libusb_device_handle *device, const char *path, Prototype_EzUsb_control_msg uptr)
+int libezusb_load_ram_imagic(libusb_device_handle * device, const char *path,
+			     Prototype_EzUsb_control_msg uptr)
 {
-    FILE			*image;
-    struct ram_poke_context	ctx;
-    int				status;
+	FILE *image;
+	struct ram_poke_context ctx;
+	int status;
 
-    //Load the runtime library reference
-    ezusb_usb_control_msg = uptr;
+	//Load the runtime library reference
+	ezusb_usb_control_msg = uptr;
 
-    image = fopen (path, "rb");
-    if (image == 0) {
-    printf("%s: unable to open for input.\n", path);
-    return -2;
-    } else if (verbose)
-    printf("open Imagic driver file %s\n", path);
+	image = fopen(path, "rb");
+	if (image == 0) {
+		printf("%s: unable to open for input.\n", path);
+		return -2;
+	} else if (verbose)
+		printf("open Imagic driver file %s\n", path);
 
-    // Always internal memory for imagic
-    ctx.mode = internal_only;
+	// Always internal memory for imagic
+	ctx.mode = internal_only;
 
-    /* scan the driver for its firmware array */
-    ctx.device = device;
-    ctx.total = ctx.count = 0;
-    status = parse_imagic (image, &ctx, ram_poke, device);
-    if (status < 0) {
-    printf("unable to download %s\n", path);
-    return status;
-    }
+	/* scan the driver for its firmware array */
+	ctx.device = device;
+	ctx.total = ctx.count = 0;
+	status = parse_imagic(image, &ctx, ram_poke, device);
+	if (status < 0) {
+		printf("unable to download %s\n", path);
+		return status;
+	}
 
-    if (verbose)
-    printf("... WROTE: %d bytes, %d segments, avg %d\n",
-        ctx.total, ctx.count, ctx.total / ctx.count);
+	if (verbose)
+		printf("... WROTE: %d bytes, %d segments, avg %d\n",
+		       ctx.total, ctx.count, ctx.total / ctx.count);
 
-    return 0;
+	return 0;
 }
