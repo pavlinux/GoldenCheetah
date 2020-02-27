@@ -5,7 +5,7 @@ branches:
 os:
 - osx
 - linux
-dist: xenial
+dist: bionic
 language: c++
 env:
   global:
@@ -34,7 +34,9 @@ env:
         osx_image: xcode10.1
         compiler: clang
       - os: linux
-        compiler: gcc
+        compiler:
+    	    - clang
+	    - gcc
 before_install:
 - travis/$TRAVIS_OS_NAME/before_install.sh
 before_script:
