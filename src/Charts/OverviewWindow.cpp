@@ -695,7 +695,7 @@ Card::setData(RideItem *item)
         // get lts, sts, sb, rr for the input metric
         PMCData *pmc = parent->context->athlete->getPMCFor(settings.symbol);
 
-        QDate date = item ? item->dateTime.date() : QDate();
+        QDate date = item->dateTime.date();
         lts = pmc->lts(date);
         sts = pmc->sts(date);
         stress = pmc->stress(date);
