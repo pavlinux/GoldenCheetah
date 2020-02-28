@@ -56,7 +56,7 @@ PYTHONLIBS = -L/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu -L/usr/lib -lpyth
 
 # We use g++ on all platforms so switch on auto vectorization amongst other
 # things to speed up looping over ride file points
-QMAKE_CXXFLAGS += -g0 -ggdb0 -Ofast -mtune=native -march=native -mfpmath=sse -fexcess-precision=fast -fno-strict-aliasing
+QMAKE_CXXFLAGS += -g0 -ggdb0 -Ofast -mtune=native -march=native -mfpmath=sse -fexcess-precision=fast -fno-strict-aliasing -floop-parallelize-all -funroll-all-loops
 
 # Let us know where flex and bison are installed.
 # You may need to specify the full path if things don't work.

@@ -45,7 +45,8 @@ LTMTrend::LTMTrend(const double *xdata, const double *ydata, int count) :
     if (fabs( double(points) * sumXsquared - sumX * sumX) > DBL_EPSILON) {
         b = ( double(points) * sumXY - sumY * sumX) /
             ( double(points) * sumXsquared - sumX * sumX);
-        a = (sumY - b * sumX) / double(points);
+
+        a = (points > 0) ? ((sumY - b * sumX) / double(points)): 0;
         /*UNUSED double r = ( double(points) * sumXY - sumY * sumX) /
             sqrt(( double(points) * sumXsquared - sumX * sumX) * ( double(points) * sumYsquared - sumY * sumY)); */
 

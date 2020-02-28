@@ -518,6 +518,7 @@ public:
     {
 	parent = _parent;
 	zone_number = _zone_number;
+	watts = 0.0l;
 
 	RideItem *rideItem = parent->rideItem;
 
