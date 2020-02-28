@@ -152,6 +152,8 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
     double sectionStart = 0.0l;
     QPolygonF *polygon;
     QPointF *points = NULL;
+    QPolygonF *pg_array[2 * to] = {0};
+    int k = 0;
 
     for (int i = from; i <= to; i++ ) {
 
@@ -160,6 +162,9 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
         if (i == from) {
             // first polygon
             polygon = new QPolygonF (4);
+	    if (pg_array[k] != polygon)
+		pg_array[k++] = polygon;
+
             points = polygon->data();
             sectionStart = sample.x();
             double xi = xMap.transform( sample.x() );
@@ -194,6 +199,9 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
 
             // start the next polygon with the SAME point than the previous one to have a step-free graph
             polygon = new QPolygonF (4);
+            if (pg_array[k] != polygon)
+        	pg_array[k++] = polygon;
+
             points = polygon->data();
             sectionStart = sample.x();
             double xi2 = xMap.transform( sample.x() );
@@ -279,8 +287,14 @@ void AllPlotSlopeCurve::drawCurve( QPainter *painter, int,
             painter->setFont(QFont("Helvetica",8));
             QwtPainter::drawText(painter, pText, text );
         }
-
         i++;
     }
-    delete polygon;
+    // free polygon[s];
+    while (k-- > 0) {
+	if (pg_array[k]) {
+		delete pg_array[k];
+		pg_array[k] = NULL;
+	}
+    }
+    polygon = NULL;
 }
