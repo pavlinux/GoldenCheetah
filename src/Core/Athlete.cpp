@@ -91,7 +91,7 @@ Athlete::Athlete(Context *context, const QDir &homeDir)
     if (returnCode != 0) return;
 
     // metric / non-metric
-    QVariant unit = appsettings->value(NULL, GC_UNIT, GC_UNIT_METRIC);
+    QVariant unit = appsettings->value(nullptr, GC_UNIT, GC_UNIT_METRIC);
     if (unit == 0) {
         // Default to system locale
         unit = QLocale::system().measurementSystem() == QLocale::MetricSystem ? GC_UNIT_METRIC : GC_UNIT_IMPERIAL;
@@ -150,13 +150,13 @@ Athlete::Athlete(Context *context, const QDir &homeDir)
 
     // read athlete's autoimport configuration and initialize the autoimport process
     autoImportConfig = new RideAutoImportConfig(home->config());
-    autoImport = NULL;
+    autoImport = nullptr;
 
     // Search / filter
     namedSearches = new NamedSearches(this); // must be before navigator
 
     // Metadata
-    rideCache = NULL; // let metadata know we don't have a ridecache yet
+    rideCache = nullptr; // let metadata know we don't have a ridecache yet
     rideMetadata_ = new RideMetadata(context,true);
     rideMetadata_->hide();
     colorEngine = new ColorEngine(context);
@@ -307,7 +307,7 @@ Athlete::translateDefaultCharts(QList<LTMSettings>&charts)
 	chartNameMap.insert("Time in W' Zone", tr("Time in W' Zone"));
 	chartNameMap.insert("Time In HR Zone", tr("Time In HR Zone"));
 	chartNameMap.insert("Power Distribution", tr("Power Distribution"));
-    chartNameMap.insert("Vo2max Estimation", tr("Vo2max Estimation"));
+	chartNameMap.insert("Vo2max Estimation", tr("Vo2max Estimation"));
 	chartNameMap.insert("KPI Tracker", tr("KPI Tracker"));
 	chartNameMap.insert("Critical Power Trend", tr("Critical Power Trend"));
 	chartNameMap.insert("Aerobic Power", tr("Aerobic Power"));
@@ -322,25 +322,25 @@ Athlete::translateDefaultCharts(QList<LTMSettings>&charts)
 	chartNameMap.insert("BikeStress and BikeIntensity", tr("BikeStress and BikeIntensity"));
 	chartNameMap.insert("Stress and Distance", tr("Stress and Distance"));
 	chartNameMap.insert("Calories vs Duration", tr("Calories vs Duration"));
-    chartNameMap.insert("Stress (TISS)", tr("Stress (TISS)"));
-    chartNameMap.insert("Aerobic Response", tr("Aerobic Response"));
-    chartNameMap.insert("Anaerobic Response", tr("Anaerobic Response"));
-    chartNameMap.insert("PMC (Coggan)", tr("PMC (Coggan)"));
-    chartNameMap.insert("PMC (Skiba)", tr("PMC (Skiba)"));
-    chartNameMap.insert("PMC (TRIMP)", tr("PMC (TRIMP)"));
-    chartNameMap.insert("PMC (Distance)", tr("PMC (Distance)"));
-    chartNameMap.insert("PMC (Duration)", tr("PMC (Duration)"));
-    chartNameMap.insert("CP History", tr("CP History"));
-    chartNameMap.insert("CP Analysis", tr("CP Analysis"));
-    chartNameMap.insert("PMC (TriScore)", tr("PMC (TriScore)"));
-    chartNameMap.insert("Time in Pace Zones", tr("Time in Pace Zones"));
-    chartNameMap.insert("Run Pace", tr("Run Pace"));
-    chartNameMap.insert("Swim Pace", tr("Swim Pace"));
+	chartNameMap.insert("Stress (TISS)", tr("Stress (TISS)"));
+	chartNameMap.insert("Aerobic Response", tr("Aerobic Response"));
+	chartNameMap.insert("Anaerobic Response", tr("Anaerobic Response"));
+	chartNameMap.insert("PMC (Coggan)", tr("PMC (Coggan)"));
+	chartNameMap.insert("PMC (Skiba)", tr("PMC (Skiba)"));
+	chartNameMap.insert("PMC (TRIMP)", tr("PMC (TRIMP)"));
+	chartNameMap.insert("PMC (Distance)", tr("PMC (Distance)"));
+	chartNameMap.insert("PMC (Duration)", tr("PMC (Duration)"));
+	chartNameMap.insert("CP History", tr("CP History"));
+	chartNameMap.insert("CP Analysis", tr("CP Analysis"));
+	chartNameMap.insert("PMC (TriScore)", tr("PMC (TriScore)"));
+	chartNameMap.insert("Time in Pace Zones", tr("Time in Pace Zones"));
+	chartNameMap.insert("Run Pace", tr("Run Pace"));
+	chartNameMap.insert("Swim Pace", tr("Swim Pace"));
 
-    for(int i=0; i<charts.count(); i++) {
-        // Replace chart name for localized version, default to english name
-        charts[i].name = chartNameMap.value(charts[i].name, charts[i].name);
-    }
+	for (int i=0; i<charts.count(); i++) {
+		// Replace chart name for localized version, default to english name
+		charts[i].name = chartNameMap.value(charts[i].name, charts[i].name);
+	}
 }
 
 void
@@ -348,7 +348,7 @@ Athlete::configChanged(qint32 state)
 {
     // change units
     if (state & CONFIG_UNITS) {
-        QVariant unit = appsettings->value(NULL, GC_UNIT, GC_UNIT_METRIC);
+        QVariant unit = appsettings->value(nullptr, GC_UNIT, GC_UNIT_METRIC);
         useMetricUnits = (unit.toString() == GC_UNIT_METRIC);
     }
 
@@ -366,7 +366,7 @@ Athlete::configChanged(qint32 state)
 void
 Athlete::importFilesWhenOpeningAthlete() {
 
-    autoImport = NULL;
+    autoImport = nullptr;
     // just do it if something is configured
     if (autoImportConfig->hasRules()) {
 
@@ -405,7 +405,7 @@ AthleteDirectoryStructure::AthleteDirectoryStructure(const QDir home){
 
 AthleteDirectoryStructure::~AthleteDirectoryStructure() {
 
-    myhome = NULL;
+    myhome = nullptr;
 
 }
 
@@ -431,7 +431,7 @@ AthleteDirectoryStructure::createAllSubdirs() {
 
 }
 
-bool
+inline bool
 AthleteDirectoryStructure::subDirsExist() {
 
     return (activities().exists() &&
@@ -498,7 +498,7 @@ Athlete::getWeight(QDate date, RideFile *ride)
         weight = appsettings->cvalue(context->athlete->cyclist, GC_WEIGHT, "75.0").toString().toDouble(); // default to 75kg
 
     // No weight default is weird, we'll set to 80kg
-    if (weight <= 0.00) weight = 80.00;
+    if (weight <= 0.00) weight = 75.00f;
 
     return weight;
 }
@@ -506,7 +506,7 @@ Athlete::getWeight(QDate date, RideFile *ride)
 double
 Athlete::getHeight(RideFile *ride)
 {
-    double height = 0;
+    double height = 0.0f;
 
     // ride if present?
     if (ride) height = ride->getTag("Height", "0.0").toDouble();
@@ -515,7 +515,7 @@ Athlete::getHeight(RideFile *ride)
     if (!height) height = appsettings->cvalue(context->athlete->cyclist, GC_HEIGHT, 0.0f).toString().toDouble();
 
     // from weight via Stillman Average?
-    if (!height && ride) height = (getWeight(ride->startTime().date(), ride)+100.0)/98.43;
+    if (!height && ride) height = (getWeight(ride->startTime().date(), ride)+100.0f)/98.43f;
 
     // it must not be zero!!!
     if (!height) height = 1.7526f; // 5'9" is average male height
@@ -527,10 +527,10 @@ Athlete::getHeight(RideFile *ride)
 Banister *
 Athlete::getBanisterFor(QString metricName, QString perfMetricName, int t1 , int t2)
 {
-    Banister *returning = NULL;
+    Banister *returning = nullptr;
 
     // if we don't already have one, create it
-    returning = banisterData.value(metricName+perfMetricName, NULL); // we do
+    returning = banisterData.value(metricName+perfMetricName, nullptr); // we do
     if (!returning) {
 
         // specification is blank and passes for all
@@ -548,10 +548,10 @@ Athlete::getBanisterFor(QString metricName, QString perfMetricName, int t1 , int
 PMCData *
 Athlete::getPMCFor(QString metricName, int stsdays, int ltsdays)
 {
-    PMCData *returning = NULL;
+    PMCData *returning = nullptr;
 
     // if we don't already have one, create it
-    returning = pmcData.value(metricName, NULL);
+    returning = pmcData.value(metricName, nullptr);
     if (!returning) {
 
         // specification is blank and passes for all
@@ -567,10 +567,10 @@ Athlete::getPMCFor(QString metricName, int stsdays, int ltsdays)
 PMCData *
 Athlete::getPMCFor(Leaf *expr, DataFilterRuntime *df, int stsdays, int ltsdays)
 {
-    PMCData *returning = NULL;
+    PMCData *returning = nullptr;
 
     // if we don't already have one, create it
-    returning = pmcData.value(expr->signature(), NULL);
+    returning = pmcData.value(expr->signature(), nullptr);
     if (!returning) {
 
         // specification is blank and passes for all

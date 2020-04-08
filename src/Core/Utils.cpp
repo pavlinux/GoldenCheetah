@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QDir>
+#include <QVector>
 #include <QRegularExpression>
 
 namespace Utils
@@ -217,6 +218,9 @@ QString jsonunprotect(const QString &string)
     s.replace("\\f", "\f");  // formfeed
     s.replace("\\/", "/");   // solidus
     s.replace("\\\\", "\\"); // backslash
+
+    // those trailing spaces.
+    while (s.endsWith(" ")) s = s.mid(0,s.length()-1);
     return s;
 }
 
@@ -249,6 +253,117 @@ searchPath(QString path, QString binary, bool isexec)
                 returning << filename;
             }
         }
+    }
+    return returning;
+}
+
+QString
+removeDP(QString in)
+{
+    QString out;
+    if (in.contains('.')) {
+
+        int n=in.indexOf('.');
+        out += in.mid(0,n);
+        int i=in.length()-1;
+        for(; in[i] != '.'; i--)
+            if (in[i] != '0')
+                break;
+        if (in[i]=='.') return out;
+        else out += in.mid(n, i-n+1);
+        return out;
+    } else {
+        return in;
+    }
+}
+
+static bool qpointflessthan(const QPointF &s1, const QPointF &s2) { return s1.x() < s2.x(); }
+static bool qpointfgreaterthan(const QPointF &s1, const QPointF &s2) { return s1.x() > s2.x(); }
+
+QVector<int>
+argsort(QVector<double> &v, bool ascending)
+{
+    // we will use an x/y - x is the sort, y is the index
+    QVector<QPointF> tuple;
+    for(int i=0; i<v.count(); i++) tuple << QPointF(v[i],i);
+
+    if (ascending) qSort(tuple.begin(), tuple.end(), qpointflessthan);
+    else qSort(tuple.begin(), tuple.end(), qpointfgreaterthan);
+
+    // now create vector of indexes
+    QVector<int> returning;
+    for(int i=0; i<tuple.count(); i++) returning << static_cast<int>(tuple[i].y());
+
+    return returning;
+}
+
+// simple moving average
+static double mean(QVector<double>&data, int start, int end)
+{
+    double sum=0;
+    double count=0;
+
+    // add em up and handle out of bounds
+    for (int i=start; i<end; i++) {
+        if (i < 0) sum += data[0];
+        else if (i>=data.count()) sum += data[data.count()-1];
+        else sum += data[i];
+        count ++;
+    }
+    return sum/count;
+}
+
+QVector<double>
+smooth_sma(QVector<double>&data, int pos, int window)
+{
+    QVector<double> returning;
+
+    int window_start=0, window_end=0;
+    int index=0;
+    double ma=0;
+
+    // window is offset from index depending upon the forward/backward/centred position
+    switch (pos) {
+    case GC_SMOOTH_FORWARD:
+        window_start=0;
+        window_end=window;
+        break;
+
+    case GC_SMOOTH_BACKWARD:
+        window_end=0;
+        window_start=window *-1;
+        break;
+
+    case GC_SMOOTH_CENTERED: // we should handle odd/even size better
+        window_start = (window*-1)/2;
+        window_end = (window)/2;
+    }
+
+    while (index < data.count()) {
+
+        returning << mean(data, window_start, window_end);
+
+        index ++;
+        window_start++;
+        window_end++;
+    }
+
+    return returning;
+
+}
+
+QVector<double>
+smooth_ewma(QVector<double>&data, double alpha)
+{
+    if (alpha < 0 || alpha > 1) alpha = 0.3; // if user is an idiot....
+
+    QVector<double> returning;
+    double value=0, last=0;
+    for(int i=0; i<data.count(); i++) {
+        if (i == 0)  value = data[i];
+        else value = (alpha * data[i]) + ((1.0-alpha) * last);
+        returning << value;
+        last = value;
     }
     return returning;
 }

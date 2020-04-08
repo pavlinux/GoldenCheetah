@@ -114,8 +114,8 @@
 #define VERSION31_BUILD VERSION31_UPG
 
 // the next two will with each build/release
-#define VERSION_LATEST 3990
-#define VERSION_STRING "V3.5"
+#define VERSION_LATEST 3992
+#define VERSION_STRING "V3.6-PLX"
 
 // default config for this release cycle
 #define VERSION_CONFIG_PREFIX "http://www.goldencheetah.org/defaults/3.5"
